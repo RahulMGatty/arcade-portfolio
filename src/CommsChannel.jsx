@@ -9,7 +9,6 @@ const CommsChannel = ({ onSuccess }) => {
     e.preventDefault();
     setIsSending(true);
 
-    // Use these variable names exactly as shown below 
     emailjs.sendForm(
       import.meta.env.VITE_EMAILJS_SERVICE_ID, 
       import.meta.env.VITE_EMAILJS_TEMPLATE_ID, 
@@ -19,15 +18,36 @@ const CommsChannel = ({ onSuccess }) => {
     .then(() => {
       setIsSent(true);
       setIsSending(false);
-      onSuccess(); 
+      onSuccess(); // Triggers the +500 Score reward in App.jsx
     }, (error) => {
       console.error("TRANS_ERR:", error);
       setIsSending(false);
+      alert("TRANSMISSION_FAILED: CHECK CONSOLE");
     });
   };
 
   return (
     <div className="max-w-2xl mx-auto bg-gray-800 border-4 border-cyan-400 p-8 shadow-[0_0_15px_rgba(34,211,238,0.3)]">
+      {/* 1. RESTORED SOCIAL BUTTONS */}
+      <div className="grid grid-cols-2 gap-4 mb-10">
+        <a 
+          href="https://github.com/RahulMGatty" 
+          target="_blank" 
+          rel="noreferrer" 
+          className="bg-gray-900 border-2 border-white p-3 text-center text-[8px] text-white hover:bg-white hover:text-black transition-all"
+        >
+          [ GITHUB_MOD ]
+        </a>
+        <a 
+          href="https://www.linkedin.com/in/rahul-m-3b6b28317" 
+          target="_blank" 
+          rel="noreferrer" 
+          className="bg-blue-900 border-2 border-blue-400 p-3 text-center text-[8px] text-white hover:bg-blue-400 hover:text-white transition-all"
+        >
+          [ LINKEDIN_CO-OP ]
+        </a>
+      </div>
+
       {isSent ? (
         <div className="text-center py-10 animate-pulse">
           <h2 className="text-yellow-400 text-xl mb-4">TRANSMISSION_RECEIVED!</h2>
@@ -38,13 +58,14 @@ const CommsChannel = ({ onSuccess }) => {
         <form onSubmit={sendEmail} className="space-y-6">
           <div className="flex justify-between items-center text-[10px]">
             <span className="text-cyan-400">STATUS: READY_TO_SEND</span>
-            <span className="text-gray-500">v2.0.26</span>
+            <span className="text-gray-500 uppercase">Loc: Mangaluru, IN</span>
           </div>
 
           <div className="space-y-4">
+            {/* 2. SYNCED NAME ATTRIBUTE TO MATCH YOUR TEMPLATE */}
             <input 
               required 
-              name="name"
+              name="name" 
               type="text" 
               placeholder="PLAYER_CALLSIGN" 
               className="w-full bg-black border-2 border-gray-700 p-3 text-white text-[9px] focus:border-yellow-400 outline-none placeholder:text-gray-700" 
