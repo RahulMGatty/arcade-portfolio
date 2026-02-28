@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 
 const ProjectMonitor = ({ imageUrl }) => (
-  <div className="relative w-full aspect-video bg-black border-4 border-gray-700 overflow-hidden shadow-[0_0_15px_rgba(0,0,0,1)] group mb-6">
+  <div className="relative w-full aspect-video bg-black border-4 border-gray-700 overflow-hidden mb-6">
     <div className="absolute inset-0 bg-[linear-gradient(rgba(18,16,16,0)_50%,rgba(0,0,0,0.1)_50%),linear-gradient(90deg,rgba(255,0,0,0.03),rgba(0,255,0,0.01),rgba(0,0,255,0.03))] bg-[size:100%_3px,2px_100%] pointer-events-none z-20"></div>
     {imageUrl ? (
       <img src={imageUrl} alt="Project" className="w-full h-full object-cover grayscale-[10%] brightness-90 contrast-125" />
     ) : (
-      <div className="w-full h-full flex items-center justify-center bg-gray-900 text-gray-600 text-[10px] animate-pulse">NO_SIGNAL</div>
+      <div className="w-full h-full flex items-center justify-center bg-gray-900 text-gray-600 text-[10px] animate-pulse uppercase">No Signal</div>
     )}
   </div>
 );
@@ -16,19 +16,14 @@ const QuestLog = () => {
 
   const playHoverSound = () => {
     const audio = new Audio('/blip.mp3');
-    audio.volume = 0.3;
+    audio.volume = 0.2;
     audio.currentTime = 0;
     audio.play().catch(() => {});
   };
 
-  const handleStageChange = (key) => {
-    playHoverSound();
-    setActiveQuest(key);
-  };
-
   const quests = {
-    quest1: { title: "STAGE 1: E-COMMERCE", status: "CLEARED", image: "/p1.jpg", desc: "React-based storefront.", loot: ["React", "Node.js"] },
-    quest2: { title: "STAGE 2: DASHBOARD", status: "CLEARED", image: "/p2.jpg", desc: "Data visualization tool.", loot: ["JS", "Chart.js"] }
+    quest1: { title: "STAGE 1: E-COMMERCE", status: "CLEARED", image: "/p1.jpg", desc: "Retro-themed shop engine.", loot: ["React", "Stripe"] },
+    quest2: { title: "STAGE 2: DASHBOARD", status: "CLEARED", image: "/p2.jpg", desc: "Data visualization portal.", loot: ["D3.js", "API"] }
   };
 
   return (
@@ -39,7 +34,7 @@ const QuestLog = () => {
           <button
             key={key}
             onMouseEnter={playHoverSound}
-            onClick={() => handleStageChange(key)}
+            onClick={() => setActiveQuest(key)}
             className={`p-3 border-4 text-[9px] font-bold transition-all ${activeQuest === key ? 'border-cyan-400 bg-cyan-900/30 text-cyan-300' : 'border-transparent hover:border-gray-500 hover:bg-gray-700'}`}
           >
             {quests[key].title}
@@ -49,8 +44,7 @@ const QuestLog = () => {
 
       <div className="flex-[2] bg-gray-900 border-4 border-cyan-400 p-6 md:p-8">
         <ProjectMonitor imageUrl={quests[activeQuest].image} />
-        <h2 className="text-lg text-cyan-400 mb-4 font-bold">{quests[activeQuest].title}</h2>
-        <div className="text-yellow-400 text-[10px] mb-6 font-bold">STATUS: {quests[activeQuest].status}</div>
+        <h2 className="text-lg text-cyan-400 mb-4 font-bold uppercase">{quests[activeQuest].title}</h2>
         <p className="leading-loose mb-8 text-[11px] text-gray-300">{quests[activeQuest].desc}</p>
         <div className="flex gap-4 flex-wrap">
           {quests[activeQuest].loot.map(item => (
