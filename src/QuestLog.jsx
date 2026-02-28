@@ -22,7 +22,7 @@ const QuestLog = () => {
   };
 
   const quests = {
-    quest1: { title: "STAGE 1: E-COMMERCE", status: "CLEARED", image: "/p1.jpg", desc: "Retro-themed shop engine.", loot: ["React", "Stripe"] },
+    quest1: { title: "STAGE 1: E-COMMERCE", status: "CLEARED", image: "/project1.jpg", desc: "Retro-themed shop engine.", loot: ["React", "Stripe"] },
     quest2: { title: "STAGE 2: DASHBOARD", status: "CLEARED", image: "/p2.jpg", desc: "Data visualization portal.", loot: ["D3.js", "API"] }
   };
 

@@ -1,62 +1,81 @@
-import React, { useState } from 'react';
-import WeaponWheel from './WeaponWheel';
+import React, { useState, useEffect } from 'react';
+import WeaponWheel from './WeaponWheel'; 
+import QuestLog from './QuestLog';
+import SkillTree from './SkillTree';
+import CommsChannel from './CommsChannel';
+import LoadingScreen from './LoadingScreen';
 import './index.css';
-const WeaponWheel = ({ onSelect }) => {
-  const [isOpen, setIsOpen] = useState(false);
-  
-  const menuItems = [
-    { id: 'home', label: 'START' },
-    { id: 'skills', label: 'UPGRADES' },
-    { id: 'projects', label: 'STAGES' },
-    { id: 'contact', label: 'VS MODE' }
-  ];
 
-  const playHoverSound = () => {
-    const audio = new Audio('/blip.mp3');
-    audio.volume = 0.4;
-    audio.currentTime = 0; // Snap to start
-    audio.play().catch(() => {});
+const App = () => {
+  const [currentView, setCurrentView] = useState('home');
+  const [isLoading, setIsLoading] = useState(false);
+  const [isGameOver, setIsGameOver] = useState(false);
+
+  // --- IDLE TIMER (GAME OVER) ---
+  let idleTimer;
+  const resetTimer = () => {
+    setIsGameOver(false);
+    clearTimeout(idleTimer);
+    idleTimer = setTimeout(() => setIsGameOver(true), 60000);
   };
 
-  const handleItemClick = (id) => {
-    playHoverSound();
-    // 50ms buffer allows sound to trigger before the loader blocks the thread
-    setTimeout(() => {
-      onSelect(id);
-      setIsOpen(false);
-    }, 50);
+  useEffect(() => {
+    window.addEventListener('mousemove', resetTimer);
+    window.addEventListener('click', resetTimer);
+    resetTimer();
+    return () => {
+      window.removeEventListener('mousemove', resetTimer);
+      window.removeEventListener('click', resetTimer);
+      clearTimeout(idleTimer);
+    };
+  }, []);
+
+  const handleNavigation = (view) => {
+    if (view !== currentView) {
+      setIsLoading(true);
+      setCurrentView(view);
+    }
   };
 
   return (
-    <div className="relative flex items-center justify-center h-80 w-80 mx-auto my-8 scale-75 md:scale-100 transition-transform">
-      <button 
-        onClick={() => setIsOpen(!isOpen)}
-        onMouseEnter={playHoverSound}
-        className="z-10 w-24 h-24 bg-purple-700 border-4 border-white text-yellow-400 drop-shadow-[6px_6px_0_rgba(0,255,255,1)] active:translate-y-1 hover:bg-purple-600 transition-all flex items-center justify-center text-[10px] font-bold"
-      >
-        {isOpen ? 'CANCEL' : 'MENU'}
-      </button>
+    <div className="min-h-screen w-full bg-gray-900 p-8 relative overflow-hidden" 
+         style={{ fontFamily: '"Press Start 2P", cursive', fontSize: '0.8rem' }}>
+      
+      {/* 8-Bit Frame */}
+      <div className="fixed inset-0 pointer-events-none border-[16px] border-gray-800 opacity-50 z-0"></div>
 
-      {isOpen && menuItems.map((item, index) => {
-        const angle = (index / menuItems.length) * 2 * Math.PI - (Math.PI / 2);
-        const radius = 130; 
-        const x = Math.round(radius * Math.cos(angle));
-        const y = Math.round(radius * Math.sin(angle));
+      {isGameOver && (
+        <div className="fixed inset-0 z-[200] bg-black/90 flex flex-col items-center justify-center">
+          <h2 className="text-4xl md:text-6xl text-red-600 drop-shadow-[4px_4px_0_white] animate-bounce mb-8">GAME OVER</h2>
+          <p className="text-yellow-400 text-xs animate-pulse">MOVE MOUSE TO RESPAWN</p>
+        </div>
+      )}
 
-        return (
-          <button
-            key={item.id}
-            onMouseEnter={playHoverSound}
-            onClick={() => handleItemClick(item.id)}
-            className="absolute w-28 h-12 bg-gray-900 border-4 border-cyan-400 text-white text-[9px] hover:bg-yellow-400 hover:text-black drop-shadow-[4px_4px_0_rgba(255,0,255,0.8)] font-bold transition-colors flex items-center justify-center text-center"
-            style={{ transform: `translate(${x}px, ${y}px)` }}
-          >
-            {item.label}
-          </button>
-        );
-      })}
+      {isLoading && <LoadingScreen onComplete={() => setIsLoading(false)} />}
+
+      <div className="relative z-10 max-w-6xl mx-auto">
+        <header className="flex flex-col md:flex-row justify-between items-start md:items-center border-b-4 border-purple-500 pb-6 mb-8 uppercase gap-6 md:gap-0">
+          <div>
+            <h1 className="text-2xl text-yellow-400 drop-shadow-[4px_4px_0_rgba(255,0,255,0.8)] mb-2">PLAYER 1</h1>
+            <span className="text-cyan-400">CLASS: FULL-STACK DEV</span>
+          </div>
+        </header>
+
+        <WeaponWheel onSelect={handleNavigation} />
+
+        <main className="mt-12">
+          {currentView === 'home' && (
+            <div className="text-center text-cyan-400 mt-20 animate-pulse">
+              INSERT COIN OR SELECT STAGE
+            </div>
+          )}
+          {currentView === 'projects' && <QuestLog />}
+          {currentView === 'skills' && <SkillTree />}
+          {currentView === 'contact' && <CommsChannel />}
+        </main>
+      </div>
     </div>
   );
 };
 
-export default WeaponWheel;
+export default App;
