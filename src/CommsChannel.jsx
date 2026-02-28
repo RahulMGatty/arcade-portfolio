@@ -1,123 +1,25 @@
-import React, { useState } from 'react';
+import React from 'react';
 
 const CommsChannel = () => {
-  const [formData, setFormData] = useState({ name: '', email: '', message: '' });
-  const [status, setStatus] = useState('IDLE');
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setStatus('TRANSMITTING');
-    
-    try {
-      const response = await fetch('https://formspree.io/f/xlgwvzak', {
-        method: 'POST',
-        headers: { 'Accept': 'application/json' },
-        body: new FormData(e.target)
-      });
-
-      if (response.ok) {
-        setStatus('SENT');
-        setFormData({ name: '', email: '', message: '' }); 
-      } else {
-        setStatus('ERROR');
-      }
-    } catch (error) {
-      setStatus('ERROR');
-    }
-
-    setTimeout(() => setStatus('IDLE'), 3000);
-  };
-
-  const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
-
   return (
-    <div className="max-w-4xl mx-auto flex flex-col items-center">
-      
-      {/* Arcade Header */}
-      <div className="w-full flex justify-center items-center border-b-4 border-purple-500 pb-4 mb-8">
-        <h2 className="text-xl md:text-2xl text-yellow-400 drop-shadow-[4px_4px_0_rgba(0,255,255,1)] animate-pulse">
-          NEW CHALLENGER
-        </h2>
+    <div className="max-w-2xl mx-auto bg-gray-800 border-4 border-cyan-400 p-8">
+      <div className="flex justify-between items-center mb-8 text-[10px]">
+        <span className="text-cyan-400 animate-pulse">📡 SIGNAL: ONLINE</span>
+        <span className="text-yellow-400 uppercase">Loc: Mangaluru, IN</span>
       </div>
 
-      {/* Main Terminal UI */}
-      <div className="w-full bg-gray-900 border-4 border-cyan-400 p-2 flex flex-col md:flex-row gap-2 relative shadow-[8px_8px_0_rgba(255,0,255,0.6)]">
-        
-        {/* Left Side: Arcade Decor (Hidden on Mobile) */}
-        <div className="hidden md:flex w-1/3 bg-gray-800 border-4 border-gray-700 flex-col justify-center items-center p-6 text-center">
-            <div className="text-yellow-400 text-sm mb-8 leading-loose">
-              ENTER YOUR <br/> CREDENTIALS <br/> TO CONTINUE
-            </div>
-            <div className="text-red-500 text-xs mt-auto animate-bounce">
-              INSERT COIN
-            </div>
-        </div>
-
-        {/* Right Side: The Actual Form */}
-        <form onSubmit={handleSubmit} className="w-full md:w-2/3 bg-gray-800 border-4 border-gray-700 p-6 flex flex-col gap-6">
-          
-          <div className="flex flex-col gap-3">
-            <label className="text-cyan-400 text-[10px]">PLAYER ALIAS</label>
-            <input 
-              type="text" 
-              name="name"
-              value={formData.name}
-              onChange={handleChange}
-              required
-              className="bg-black border-4 border-gray-600 focus:border-yellow-400 outline-none p-3 text-white text-xs transition-colors"
-              placeholder="ENTER NAME..."
-            />
-          </div>
-
-          <div className="flex flex-col gap-3">
-            <label className="text-cyan-400 text-[10px]">PING ADDRESS (EMAIL)</label>
-            <input 
-              type="email" 
-              name="email"
-              value={formData.email}
-              onChange={handleChange}
-              required
-              className="bg-black border-4 border-gray-600 focus:border-yellow-400 outline-none p-3 text-white text-xs transition-colors"
-              placeholder="ENTER EMAIL..."
-            />
-          </div>
-
-          <div className="flex flex-col gap-3">
-            <label className="text-cyan-400 text-[10px]">TRANSMISSION</label>
-            <textarea 
-              name="message"
-              value={formData.message}
-              onChange={handleChange}
-              required
-              rows="4"
-              className="bg-black border-4 border-gray-600 focus:border-yellow-400 outline-none p-3 text-white text-xs transition-colors resize-none"
-              placeholder="TYPE MESSAGE..."
-            ></textarea>
-          </div>
-
-          <button 
-            type="submit" 
-            disabled={status !== 'IDLE'}
-            className={`mt-4 py-4 px-6 border-4 text-[10px] md:text-xs transition-all ${
-              status === 'IDLE' 
-                ? 'border-white bg-purple-600 text-white hover:bg-yellow-400 hover:text-black hover:border-black active:translate-y-1'
-                : status === 'TRANSMITTING'
-                  ? 'border-gray-500 bg-yellow-500 text-black cursor-not-allowed'
-                  : status === 'ERROR'
-                    ? 'border-black bg-red-600 text-white cursor-not-allowed'
-                    : 'border-black bg-cyan-400 text-black cursor-not-allowed'
-            }`}
-          >
-            {status === 'IDLE' && 'PRESS START'}
-            {status === 'TRANSMITTING' && 'LOADING...'}
-            {status === 'SENT' && 'STAGE CLEARED'}
-            {status === 'ERROR' && 'GAME OVER - RETRY'}
-          </button>
-        </form>
-
+      <div className="grid grid-cols-2 gap-4 mb-10">
+        <a href="https://github.com/RahulMGatty" target="_blank" rel="noreferrer" 
+           className="bg-gray-900 border-2 border-white p-3 text-center text-[8px] text-white hover:bg-white hover:text-black transition-all">[ GITHUB ]</a>
+        <a href="https://www.linkedin.com/in/rahul-m-3b6b28317" target="_blank" rel="noreferrer" 
+           className="bg-blue-900 border-2 border-blue-400 p-3 text-center text-[8px] text-white hover:bg-blue-400 hover:text-white transition-all">[ LINKEDIN ]</a>
       </div>
+
+      <form className="space-y-4">
+        <input type="text" placeholder="PLAYER_ID" className="w-full bg-black border-2 border-gray-700 p-3 text-white text-[9px] focus:border-yellow-400 outline-none" />
+        <textarea placeholder="ENCRYPTED_TEXT" rows="3" className="w-full bg-black border-2 border-gray-700 p-3 text-white text-[9px] focus:border-yellow-400 outline-none"></textarea>
+        <button className="w-full bg-yellow-500 text-black font-bold p-3 hover:bg-yellow-400 transition-all uppercase text-[10px]">Send Transmission</button>
+      </form>
     </div>
   );
 };
