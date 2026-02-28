@@ -1,0 +1,13 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+/* Custom 8-Bit Cursor */
+body {
+  /* This uses a classic pixelated cursor image */
+  cursor: url('https://unpkg.com/cursor-pack@1.0.0/cursors/mario/cursor.png'), auto;
+}
+
+/* Make sure buttons use the pixelated pointing hand */
+button, a, input, textarea {
+  cursor: url('https://unpkg.com/cursor-pack@1.0.0/cursors/mario/pointer.png'), pointer !important;
+}
