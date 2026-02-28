@@ -15,20 +15,35 @@ const QuestLog = () => {
   const [activeQuest, setActiveQuest] = useState('quest1');
   const quests = {
     quest1: { 
-      title: "MISSION: S4 HOLIDAYS", 
-      status: "COMPLETED", 
-      image: "/project1.jpg", 
-      desc: "Developed a production-ready travel website using MERN stack for dynamic bookings.", 
-      loot: ["MERN", "REST API", "Git"] 
+      title: "RESEARCH: MOLAR ANALYZER", 
+      status: "IN_PROGRESS", 
+      image: null, 
+      desc: "Custom 3D Slicer extension for tooth analysis using Python and SDKs.", 
+      loot: ["Python", "3D Slicer", "Research"] 
     },
     quest2: { 
+      title: "MISSION: S4 HOLIDAYS", 
+      status: "CLEARED", 
+      image: "/s4_holiday.jpg", 
+      desc: "Full-stack travel portal built during M.Sc. studies.", 
+      loot: ["MERN", "REST API"] 
+    },
+    quest3: { 
+      title: "MISSION: MEDICAL HUB", 
+      status: "CLEARED", 
+      image: "/medical_hub.jpg", 
+      desc: "Medical Report Processing Hub built with Python and Streamlit.", 
+      loot: ["Python", "Streamlit", "Automation"] 
+    },
+
+    quest4: { 
       title: "MISSION: MOVIESTAR", 
       status: "COMPLETED", 
       image: null, 
       desc: "Discovery platform with JWT-auth and TMDb API integration.", 
       loot: ["Node.js", "JWT", "API"] 
     },
-    quest3: { 
+    quest5: { 
       title: "MISSION: MISSIONME", 
       status: "ACTIVE", 
       image: null, 
