@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-
+import WeaponWheel from './WeaponWheel';
+import './index.css';
 const WeaponWheel = ({ onSelect }) => {
   const [isOpen, setIsOpen] = useState(false);
   
