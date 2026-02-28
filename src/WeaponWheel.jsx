@@ -13,17 +13,16 @@ const WeaponWheel = ({ onSelect }) => {
   const playHoverSound = () => {
     const audio = new Audio('/blip.mp3');
     audio.volume = 0.3;
-    audio.currentTime = 0; // Starts sound immediately
+    audio.currentTime = 0;
     audio.play().catch(() => {});
   };
 
   const handleItemClick = (id) => {
     playHoverSound();
-    // 50ms buffer to let the audio engine start before UI locks for loading
     setTimeout(() => {
       onSelect(id);
       setIsOpen(false);
-    }, 50);
+    }, 50); // Small delay to let audio start
   };
 
   return (
