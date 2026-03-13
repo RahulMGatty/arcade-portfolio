@@ -1,20 +1,70 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-/* Custom 8-Bit Cursor */
+
+/* --- ARCADE GLOBAL STYLES --- */
 body {
-  /* This uses a classic pixelated cursor image */
+  margin: 0;
+  padding: 0;
+  background-color: #111827; /* gray-900 */
+  color: white;
+  /* Uses a classic pixelated cursor */
   cursor: url('https://unpkg.com/cursor-pack@1.0.0/cursors/mario/cursor.png'), auto;
+  overflow-x: hidden;
 }
 
-/* Make sure buttons use the pixelated pointing hand */
-button, a, input, textarea {
+/* Make sure interactive elements use the pixelated pointing hand */
+button, a, input, textarea, [role="button"] {
   cursor: url('https://unpkg.com/cursor-pack@1.0.0/cursors/mario/pointer.png'), pointer !important;
 }
+
+/* --- ANIMATIONS --- */
+
+/* Horizontal Scanline Movement */
 @keyframes scanline {
-  0% { transform: translateY(0); }
+  0% { transform: translateY(-100vh); }
   100% { transform: translateY(100vh); }
 }
+
 .animate-scanline {
   animation: scanline 8s linear infinite;
+}
+
+/* 8-Bit Progress Bar Fill */
+@keyframes loadingBar {
+  0% { width: 0%; }
+  10% { width: 5%; }
+  30% { width: 25%; }
+  60% { width: 70%; }
+  90% { width: 95%; }
+  100% { width: 100%; }
+}
+
+.animate-loading-bar {
+  animation: loadingBar 6s linear forwards;
+}
+
+/* Retro Pulse Effect for Text */
+@keyframes retroPulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+
+.animate-pulse-fast {
+  animation: retroPulse 0.8s steps(2, start) infinite;
+}
+
+/* --- UTILITY CLASSES --- */
+.font-arcade {
+  font-family: 'Press Start 2P', cursive;
+}
+
+/* Smooth fade-in for page transitions */
+.fade-in {
+  animation: fadeIn 0.5s ease-out forwards;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
