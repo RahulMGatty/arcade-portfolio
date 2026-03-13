@@ -27,7 +27,7 @@ const SkillTree = ({ isGodMode }) => {
             key={i} 
             className={`border-4 p-5 transition-all group ${
               isGodMode 
-              ? 'border-yellow-600 bg-yellow-900/10 hover:border-yellow-300 hover:bg-yellow-900/30' 
+              ? 'border-yellow-600 bg-yellow-900/10 hover:border-yellow-300 hover:bg-yellow-900/30 shadow-[inset_0_0_15px_rgba(234,179,8,0.1)]' 
               : 'border-gray-700 bg-transparent hover:border-cyan-400 hover:bg-gray-800'
             }`}
           >
@@ -44,7 +44,7 @@ const SkillTree = ({ isGodMode }) => {
             <ul className="space-y-4">
               {node.skills.map((skill, j) => (
                 <li key={j} className="text-white text-[9px] flex items-center gap-2 group/item">
-                  {/* Skill Node Bullet */}
+                  {/* Skill Node Bullet: Turns into a Diamond in God Mode */}
                   <span className={`w-1.5 h-1.5 transition-all duration-500 ${
                     isGodMode 
                     ? 'bg-yellow-400 shadow-[0_0_8px_#eab308] rotate-45' 
@@ -61,7 +61,9 @@ const SkillTree = ({ isGodMode }) => {
             {/* God Mode Rank Decoration */}
             {isGodMode && (
               <div className="mt-6 pt-4 border-t border-yellow-500/30 text-right">
-                <span className="text-[7px] text-yellow-400 animate-pulse font-bold tracking-tighter">MAX_LEVEL_REACHED</span>
+                <span className="text-[7px] text-yellow-400 animate-pulse font-bold tracking-tighter uppercase">
+                  Max_Level_Reached
+                </span>
               </div>
             )}
           </div>

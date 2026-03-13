@@ -33,7 +33,7 @@ const WeaponWheel = ({ onSelect, isGodMode }) => {
         onMouseEnter={playHoverSound}
         className={`z-10 w-24 h-24 border-4 transition-all flex items-center justify-center text-[10px] font-bold active:translate-y-1 ${
           isGodMode 
-          ? 'bg-yellow-500 border-yellow-200 text-black shadow-[0_0_20px_#eab308] drop-shadow-[6px_6px_0_rgba(0,0,0,1)] hover:bg-yellow-400' 
+          ? 'bg-yellow-500 border-yellow-200 text-black shadow-[0_0_25px_#eab308] drop-shadow-[6px_6px_0_rgba(0,0,0,1)] hover:bg-yellow-400' 
           : 'bg-purple-700 border-white text-yellow-400 drop-shadow-[6px_6px_0_rgba(0,255,255,1)] hover:bg-purple-600'
         }`}
       >
@@ -54,7 +54,7 @@ const WeaponWheel = ({ onSelect, isGodMode }) => {
             onClick={() => handleItemClick(item.id)}
             className={`absolute w-28 h-12 border-4 text-[9px] font-bold transition-all flex items-center justify-center text-center ${
               isGodMode 
-              ? 'bg-black border-yellow-500 text-yellow-300 hover:bg-yellow-500 hover:text-black shadow-[4px_4px_0_rgba(234,179,8,0.4)] drop-shadow-[0_0_10px_rgba(234,179,8,0.2)]' 
+              ? 'bg-black border-yellow-400 text-yellow-300 hover:bg-yellow-400 hover:text-black shadow-[0_0_15px_rgba(234,179,8,0.3)] drop-shadow-[4px_4px_0_rgba(234,179,8,0.4)]' 
               : 'bg-gray-900 border-cyan-400 text-white hover:bg-yellow-400 hover:text-black drop-shadow-[4px_4px_0_rgba(255,0,255,0.8)]'
             }`}
             style={{ transform: `translate(${x}px, ${y}px)` }}

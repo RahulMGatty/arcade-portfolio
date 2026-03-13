@@ -6,6 +6,7 @@ import CommsChannel from './CommsChannel';
 import LoadingScreen from './LoadingScreen';
 import SplashScreen from './SplashScreen';
 import StatusScreen from './StatusScreen';
+import GodLoadingScreen from './GodLoadingScreen';
 import './index.css';
 
 const App = () => {
@@ -16,6 +17,7 @@ const App = () => {
   const [score, setScore] = useState(9448); 
   const [showStatus, setShowStatus] = useState(false);
   const [isGodMode, setIsGodMode] = useState(false);
+  const [isGodLoading, setIsGodLoading] = useState(false);
 
   // --- KONAMI CODE LOGIC ---
   const konamiIndex = useRef(0);
@@ -24,17 +26,27 @@ const App = () => {
     'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a'
   ];
 
+  // Helper to trigger the 4-second ascension transition
+  const triggerGodMode = () => {
+    setIsGodLoading(true); // Show the special gold loader
+    const audio = new Audio('/cheat.mp3');
+    audio.volume = 0.5;
+    audio.play().catch(() => {});
+
+    setTimeout(() => {
+      setIsGodLoading(false); // Hide loader after 4s
+      setIsGodMode(true);     // Turn the entire site Gold
+      setScore(999999);       // Max the score
+    }, 4000);
+  };
+  
   useEffect(() => {
     if (!isPoweredOn) return;
     const handleKeyDown = (e) => {
       if (e.key === KONAMI_CODE[konamiIndex.current]) {
         konamiIndex.current++;
         if (konamiIndex.current === KONAMI_CODE.length) {
-          setIsGodMode(true);
-          setScore(999999);
-          const audio = new Audio('/cheat.mp3');
-          audio.volume = 0.5;
-          audio.play().catch(() => {});
+          triggerGodMode(); // Fixed: Now calls the 4s transition
           konamiIndex.current = 0;
         }
       } else {
@@ -75,7 +87,13 @@ const App = () => {
     setCurrentView(view);
   };
 
+  const handleScoreUp = () => setScore(prev => prev + 500);
+
+  // --- RENDER LOGIC ---
   if (!isPoweredOn) return <SplashScreen onStart={() => setIsPoweredOn(true)} />;
+  
+  // High-priority render for the Gold Ascension sequence
+  if (isGodLoading) return <GodLoadingScreen />;
 
   return (
     <div className={`min-h-screen w-full p-8 relative overflow-hidden text-white transition-all duration-700 ${
@@ -92,8 +110,8 @@ const App = () => {
       }`}></div>
 
       {isGameOver && (
-        <div className="fixed inset-0 z-[200] bg-black/95 flex flex-col items-center justify-center">
-          <h2 className="text-4xl md:text-6xl text-red-600 animate-bounce mb-8 uppercase">Game Over</h2>
+        <div className="fixed inset-0 z-[200] bg-black/95 flex flex-col items-center justify-center fade-in">
+          <h2 className="text-4xl md:text-6xl text-red-600 animate-bounce mb-8 uppercase text-center">Game Over</h2>
         </div>
       )}
       {isLoading && <LoadingScreen onComplete={() => setIsLoading(false)} />}
@@ -112,16 +130,15 @@ const App = () => {
           
           <div className="flex flex-col md:flex-row items-end md:items-center gap-6">
             <a href="/resume.pdf" download className={`border-b-4 border-r-4 px-4 py-3 text-[8px] transition-all ${
-              isGodMode ? 'bg-yellow-500 border-yellow-700 text-black hover:bg-yellow-400' : 'bg-purple-600 border-purple-900 text-white hover:bg-purple-500'
+              isGodMode ? 'bg-yellow-500 border-yellow-700 text-black hover:bg-yellow-400 shadow-[0_0_10px_#eab308]' : 'bg-purple-600 border-purple-900 text-white hover:bg-purple-500'
             }`}>[ DOWNLOAD_MANUAL.EXE ]</a>
-            <div className="text-right text-[10px] text-gray-300 space-y-2">
+            <div className="text-right text-[10px] text-gray-300 space-y-2 font-bold">
               <div>SCORE: <span className={isGodMode ? 'text-yellow-300 animate-pulse' : 'text-yellow-400'}>{score.toString().padStart(6, '0')}</span></div>
               <div>LIVES: <span className="text-red-500">{isGodMode ? '∞∞∞' : '♥♥♥'}</span></div>
             </div>
           </div>
         </header>
 
-        {/* WEAPON WHEEL: Passing isGodMode to change button colors */}
         <WeaponWheel onSelect={handleNavigation} isGodMode={isGodMode} />
 
         <main className="mt-12">
@@ -145,7 +162,6 @@ const App = () => {
             )
           )}
 
-          {/* INTERNAL MISSION PAGES */}
           {currentView === 'projects' && <QuestLog isGodMode={isGodMode} />}
           {currentView === 'skills' && <SkillTree isGodMode={isGodMode} />}
           {currentView === 'contact' && <CommsChannel isGodMode={isGodMode} onSuccess={handleScoreUp} />}

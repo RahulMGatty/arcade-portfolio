@@ -1,6 +1,6 @@
 import React from 'react';
 
-const StatusScreen = ({ onClose }) => {
+const StatusScreen = ({ onClose, isGodMode }) => {
   const stats = [
     { label: "STRENGTH (JAVA)", value: 75 },
     { label: "AGILITY (JS/REACT)", value: 80 },
@@ -9,12 +9,18 @@ const StatusScreen = ({ onClose }) => {
   ];
 
   return (
-    <div className="max-w-4xl mx-auto bg-black/90 border-4 border-cyan-400 p-8 shadow-[0_0_30px_rgba(34,211,238,0.4)] relative fade-in">
+    <div className={`max-w-4xl mx-auto border-4 p-8 relative fade-in transition-all duration-700 ${
+      isGodMode 
+      ? 'bg-black border-yellow-400 shadow-[0_0_40px_rgba(234,179,8,0.5)]' 
+      : 'bg-black/90 border-cyan-400 shadow-[0_0_30px_rgba(34,211,238,0.4)]'
+    }`}>
       
       {/* 8-Bit Close Button (Top Right) */}
       <button 
         onClick={onClose}
-        className="absolute top-4 right-4 text-gray-500 hover:text-red-500 text-xl transition-colors"
+        className={`absolute top-4 right-4 text-xl transition-colors ${
+          isGodMode ? 'text-yellow-600 hover:text-yellow-300' : 'text-gray-500 hover:text-red-500'
+        }`}
       >
         [X]
       </button>
@@ -22,9 +28,15 @@ const StatusScreen = ({ onClose }) => {
       <div className="flex flex-col md:flex-row gap-8">
         {/* Profile Header */}
         <div className="flex-1">
-          <h2 className="text-yellow-400 text-2xl mb-2 uppercase italic tracking-tighter">Player Status</h2>
-          <div className="text-cyan-400 text-[10px] mb-6 tracking-widest uppercase">
-            Rank: Research Intern // Unit: St. Aloysius
+          <h2 className={`text-2xl mb-2 uppercase italic tracking-tighter font-bold ${
+            isGodMode ? 'text-yellow-300 animate-pulse' : 'text-yellow-400'
+          }`}>
+            {isGodMode ? "Master Profile" : "Player Status"}
+          </h2>
+          <div className={`text-[10px] mb-6 tracking-widest uppercase font-bold ${
+            isGodMode ? 'text-yellow-500' : 'text-cyan-400'
+          }`}>
+            Rank: {isGodMode ? 'Legendary Administrator' : 'Research Intern'} // Unit: St. Aloysius
           </div>
           
           <div className="space-y-6">
@@ -32,12 +44,18 @@ const StatusScreen = ({ onClose }) => {
               <div key={i}>
                 <div className="flex justify-between text-[9px] mb-2 uppercase text-white font-bold">
                   <span>{stat.label}</span>
-                  <span className="text-cyan-400">{stat.value}%</span>
+                  <span className={isGodMode ? 'text-yellow-400' : 'text-cyan-400'}>
+                    {isGodMode ? '999%' : `${stat.value}%`}
+                  </span>
                 </div>
-                <div className="w-full h-3 bg-gray-900 border-2 border-gray-700">
+                <div className={`w-full h-3 bg-gray-900 border-2 ${
+                  isGodMode ? 'border-yellow-900' : 'border-gray-700'
+                }`}>
                   <div 
-                    className="h-full bg-gradient-to-r from-cyan-600 to-cyan-400 shadow-[0_0_15px_#22d3ee]" 
-                    style={{ width: `${stat.value}%` }}
+                    className={`h-full transition-all duration-1000 ${
+                      isGodMode ? 'bg-yellow-400 shadow-[0_0_20px_#eab308]' : 'bg-gradient-to-r from-cyan-600 to-cyan-400 shadow-[0_0_15px_#22d3ee]'
+                    }`} 
+                    style={{ width: isGodMode ? '100%' : `${stat.value}%` }}
                   ></div>
                 </div>
               </div>
@@ -46,28 +64,42 @@ const StatusScreen = ({ onClose }) => {
         </div>
 
         {/* Bio Block */}
-        <div className="flex-1 border-l-4 border-dashed border-gray-800 pl-8">
-          <div className="text-red-500 text-[10px] mb-4 font-bold uppercase tracking-widest animate-pulse">[ MISSION_BIO ]</div>
-          <p className="text-gray-300 text-[9px] leading-relaxed mb-8 italic">
+        <div className={`flex-1 border-l-4 border-dashed pl-8 ${
+          isGodMode ? 'border-yellow-900' : 'border-gray-800'
+        }`}>
+          <div className="text-red-500 text-[10px] mb-4 font-bold uppercase tracking-widest animate-pulse">
+            {isGodMode ? "[ SYSTEM_OVERRIDE_ACTIVE ]" : "[ MISSION_BIO ]"}
+          </div>
+          <p className={`text-[9px] leading-relaxed mb-8 italic ${
+            isGodMode ? 'text-yellow-100 font-bold' : 'text-gray-300'
+          }`}>
             "Currently specialized in 3D Slicer API development and medical imaging research. 
             Intermediate logic mastery in Java, Python, and C++. Available for high-stakes 
             full-stack development missions."
           </p>
           
-          <div className="grid grid-cols-2 gap-y-4 gap-x-2 text-[8px] text-gray-500 uppercase">
-            <div>LOCATION: <span className="text-white">MANGALURU, IN</span></div>
-            <div>EXP_LEVEL: <span className="text-white">M.SC SW TECH</span></div>
-            <div>CURRENT_HP: <span className="text-green-500">100/100</span></div>
-            <div>STATUS: <span className="text-yellow-400">HIRE_READY</span></div>
+          <div className="grid grid-cols-2 gap-y-4 gap-x-2 text-[8px] text-gray-500 uppercase font-bold">
+            <div>LOCATION: <span className={isGodMode ? 'text-yellow-300' : 'text-white'}>MANGALURU, IN</span></div>
+            <div>EXP_LEVEL: <span className={isGodMode ? 'text-yellow-300' : 'text-white'}>M.SC SW TECH</span></div>
+            <div>CURRENT_HP: <span className={isGodMode ? 'text-yellow-400 animate-pulse' : 'text-green-500'}>
+              {isGodMode ? '∞ / ∞' : '100/100'}
+            </span></div>
+            <div>STATUS: <span className={isGodMode ? 'text-yellow-300' : 'text-yellow-400'}>HIRE_READY</span></div>
           </div>
         </div>
       </div>
 
       {/* Large Return Button */}
-      <div className="mt-10 pt-6 border-t-2 border-gray-800 text-center">
+      <div className={`mt-10 pt-6 border-t-2 text-center ${
+        isGodMode ? 'border-yellow-900' : 'border-gray-800'
+      }`}>
         <button 
           onClick={onClose}
-          className="px-6 py-2 bg-gray-900 border-2 border-white text-white text-[9px] uppercase hover:bg-white hover:text-black transition-all active:scale-95"
+          className={`px-6 py-2 border-2 text-[9px] uppercase transition-all active:scale-95 font-bold ${
+            isGodMode 
+            ? 'bg-yellow-500 border-yellow-200 text-black hover:bg-yellow-400 shadow-[0_0_15px_#eab308]' 
+            : 'bg-gray-900 border-white text-white hover:bg-white hover:text-black'
+          }`}
         >
           {">"} Return to Main Menu {"<"}
         </button>
