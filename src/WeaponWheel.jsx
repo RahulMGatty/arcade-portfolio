@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-const WeaponWheel = ({ onSelect }) => {
+const WeaponWheel = ({ onSelect, isGodMode }) => {
   const [isOpen, setIsOpen] = useState(false);
   
   const menuItems = [
@@ -22,19 +22,25 @@ const WeaponWheel = ({ onSelect }) => {
     setTimeout(() => {
       onSelect(id);
       setIsOpen(false);
-    }, 50); // Small delay to let audio start
+    }, 50); 
   };
 
   return (
     <div className="relative flex items-center justify-center h-80 w-80 mx-auto my-8 scale-75 md:scale-100 transition-transform">
+      {/* Central Menu Button */}
       <button 
         onClick={() => setIsOpen(!isOpen)}
         onMouseEnter={playHoverSound}
-        className="z-10 w-24 h-24 bg-purple-700 border-4 border-white text-yellow-400 drop-shadow-[6px_6px_0_rgba(0,255,255,1)] active:translate-y-1 hover:bg-purple-600 transition-all flex items-center justify-center text-[10px] font-bold"
+        className={`z-10 w-24 h-24 border-4 transition-all flex items-center justify-center text-[10px] font-bold active:translate-y-1 ${
+          isGodMode 
+          ? 'bg-yellow-500 border-yellow-200 text-black shadow-[0_0_20px_#eab308] drop-shadow-[6px_6px_0_rgba(0,0,0,1)] hover:bg-yellow-400' 
+          : 'bg-purple-700 border-white text-yellow-400 drop-shadow-[6px_6px_0_rgba(0,255,255,1)] hover:bg-purple-600'
+        }`}
       >
         {isOpen ? 'CANCEL' : 'MENU'}
       </button>
 
+      {/* Radial Items */}
       {isOpen && menuItems.map((item, index) => {
         const angle = (index / menuItems.length) * 2 * Math.PI - (Math.PI / 2);
         const radius = 130; 
@@ -46,7 +52,11 @@ const WeaponWheel = ({ onSelect }) => {
             key={item.id}
             onMouseEnter={playHoverSound}
             onClick={() => handleItemClick(item.id)}
-            className="absolute w-28 h-12 bg-gray-900 border-4 border-cyan-400 text-white text-[9px] hover:bg-yellow-400 hover:text-black drop-shadow-[4px_4px_0_rgba(255,0,255,0.8)] font-bold transition-colors flex items-center justify-center text-center"
+            className={`absolute w-28 h-12 border-4 text-[9px] font-bold transition-all flex items-center justify-center text-center ${
+              isGodMode 
+              ? 'bg-black border-yellow-500 text-yellow-300 hover:bg-yellow-500 hover:text-black shadow-[4px_4px_0_rgba(234,179,8,0.4)] drop-shadow-[0_0_10px_rgba(234,179,8,0.2)]' 
+              : 'bg-gray-900 border-cyan-400 text-white hover:bg-yellow-400 hover:text-black drop-shadow-[4px_4px_0_rgba(255,0,255,0.8)]'
+            }`}
             style={{ transform: `translate(${x}px, ${y}px)` }}
           >
             {item.label}
