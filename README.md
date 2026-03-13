@@ -29,7 +29,7 @@ A high-performance, 8-bit themed developer portfolio built with React and Tailwi
 ## 👾 How to Run Locally
 1. **Clone the repo:**
    ```bash
-   git clone https://github.com/RahulMGatty/gamiofile
+   git clone https://github.com/RahulMGatty/gamiofile.git
    ```
 2. **Environment Variables: Create a .env file in the root directory:**
    ```bash
