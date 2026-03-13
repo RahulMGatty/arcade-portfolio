@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import WeaponWheel from './WeaponWheel';
 import QuestLog from './QuestLog';
 import SkillTree from './SkillTree';
@@ -17,25 +17,25 @@ const App = () => {
   const [showStatus, setShowStatus] = useState(false);
   const [isGodMode, setIsGodMode] = useState(false);
 
-  // --- KONAMI CODE LOGIC ---
+  // --- KONAMI CODE LOGIC (Ref-based for stability) ---
+  const konamiIndex = useRef(0);
+  const KONAMI_CODE = [
+    'ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 
+    'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a'
+  ];
+
   useEffect(() => {
     if (!isPoweredOn) return;
 
-    const KONAMI_CODE = [
-      'ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 
-      'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a'
-    ];
-    let konamiIndex = 0;
-
-    const handleKonami = (e) => {
-      if (e.key === KONAMI_CODE[konamiIndex]) {
-        konamiIndex++;
-        if (konamiIndex === KONAMI_CODE.length) {
+    const handleKeyDown = (e) => {
+      if (e.key === KONAMI_CODE[konamiIndex.current]) {
+        konamiIndex.current++;
+        if (konamiIndex.current === KONAMI_CODE.length) {
           activateGodMode();
-          konamiIndex = 0;
+          konamiIndex.current = 0;
         }
       } else {
-        konamiIndex = 0;
+        konamiIndex.current = 0;
       }
     };
 
@@ -44,19 +44,19 @@ const App = () => {
       setScore(999999);
       const audio = new Audio('/cheat.mp3');
       audio.volume = 0.5;
-      audio.play().catch(() => console.log("Cheat sound missing"));
+      audio.play().catch(() => console.warn("Cheat audio asset missing, but Mode Activated!"));
     };
 
-    window.addEventListener('keydown', handleKonami);
-    return () => window.removeEventListener('keydown', handleKonami);
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
   }, [isPoweredOn]);
 
-  // --- IDLE TIMER LOGIC (1 MINUTE) ---
-  let idleTimer;
+  // --- IDLE TIMER (1 MINUTE) ---
+  const idleTimer = useRef(null);
   const resetTimer = () => {
     setIsGameOver(false);
-    clearTimeout(idleTimer);
-    idleTimer = setTimeout(() => setIsGameOver(true), 60000); 
+    if (idleTimer.current) clearTimeout(idleTimer.current);
+    idleTimer.current = setTimeout(() => setIsGameOver(true), 60000); 
   };
 
   useEffect(() => {
@@ -67,7 +67,7 @@ const App = () => {
     resetTimer();
     return () => {
       events.forEach(e => window.removeEventListener(e, resetTimer));
-      clearTimeout(idleTimer);
+      if (idleTimer.current) clearTimeout(idleTimer.current);
     };
   }, [isPoweredOn]);
 
@@ -85,78 +85,92 @@ const App = () => {
 
   const handleScoreUp = () => setScore(prev => prev + 500);
 
+  // --- BOOT CHECK ---
   if (!isPoweredOn) {
     return <SplashScreen onStart={() => setIsPoweredOn(true)} />;
   }
 
   return (
-    <div className={`min-h-screen w-full p-8 relative overflow-hidden text-white transition-colors duration-1000 ${
-           isGodMode ? 'bg-yellow-900/40' : 'bg-gray-900'
+    <div className={`min-h-screen w-full p-8 relative overflow-hidden text-white transition-all duration-1000 ${
+           isGodMode ? 'bg-[#1a1400]' : 'bg-gray-900'
          }`} 
          style={{ fontFamily: '"Press Start 2P", cursive', fontSize: '0.8rem' }}>
       
-      {/* CRT Scanline Effect Overlay */}
-      <div className={`fixed inset-0 pointer-events-none bg-[linear-gradient(rgba(18,16,16,0)_50%,rgba(0,0,0,0.1)_50%)] bg-[size:100%_4px] z-[100] opacity-20 ${isGodMode && 'sepia'}`}></div>
+      {/* CRT Overlay: Dynamic Sepia filter */}
+      <div className={`fixed inset-0 pointer-events-none bg-[linear-gradient(rgba(18,16,16,0)_50%,rgba(0,0,0,0.1)_50%)] bg-[size:100%_4px] z-[100] opacity-20 ${isGodMode ? 'sepia-[0.8] hue-rotate-[15deg]' : ''}`}></div>
 
-      {/* 8-Bit Border */}
-      <div className={`fixed inset-0 pointer-events-none border-[16px] opacity-50 z-0 transition-colors ${isGodMode ? 'border-yellow-500' : 'border-gray-800'}`}></div>
+      {/* Dynamic 8-Bit Border */}
+      <div className={`fixed inset-0 pointer-events-none border-[16px] opacity-50 z-0 transition-all duration-700 ${
+        isGodMode ? 'border-yellow-600 shadow-[inset_0_0_40px_rgba(234,179,8,0.3)]' : 'border-gray-800'
+      }`}></div>
 
+      {/* Screen Overlays */}
       {isGameOver && (
-        <div className="fixed inset-0 z-[200] bg-black/95 flex flex-col items-center justify-center">
+        <div className="fixed inset-0 z-[200] bg-black/95 flex flex-col items-center justify-center fade-in">
           <h2 className="text-4xl md:text-6xl text-red-600 animate-bounce mb-8 uppercase">Game Over</h2>
-          <p className="text-yellow-400 text-[10px] animate-pulse">MOVE MOUSE TO RESPAWN</p>
+          <p className="text-yellow-400 text-[10px] animate-pulse uppercase">Move mouse to respawn</p>
         </div>
       )}
-
       {isLoading && <LoadingScreen onComplete={() => setIsLoading(false)} />}
 
       <div className="relative z-10 max-w-6xl mx-auto">
-        <header className={`flex flex-col md:flex-row justify-between items-start md:items-center border-b-4 pb-6 mb-8 uppercase gap-6 md:gap-0 transition-colors ${isGodMode ? 'border-yellow-400' : 'border-purple-500'}`}>
+        {/* Header: Colors and Title shift in God Mode */}
+        <header className={`flex flex-col md:flex-row justify-between items-start md:items-center border-b-4 pb-6 mb-8 uppercase gap-6 md:gap-0 transition-colors ${
+          isGodMode ? 'border-yellow-500 shadow-[0_4px_15px_rgba(234,179,8,0.2)]' : 'border-purple-500'
+        }`}>
           <div>
             <div className="flex items-center gap-4">
-              <h1 className={`text-2xl drop-shadow-[4px_4px_0_rgba(0,0,0,1)] mb-2 uppercase ${isGodMode ? 'text-yellow-300 animate-pulse' : 'text-yellow-400'}`}>
+              <h1 className={`text-2xl drop-shadow-[4px_4px_0_rgba(0,0,0,1)] mb-2 uppercase ${
+                isGodMode ? 'text-yellow-300 animate-pulse' : 'text-yellow-400'
+              }`}>
                 Rahul M
               </h1>
-              {isGodMode && <span className="bg-yellow-400 text-black text-[7px] px-2 py-1 rounded animate-bounce">GOD_MODE</span>}
+              {isGodMode && <span className="bg-yellow-400 text-black text-[7px] px-2 py-1 rounded animate-bounce font-bold tracking-tighter">GOD_MODE_ACTIVE</span>}
             </div>
-            <span className="text-cyan-400 text-[10px]">CLASS: RESEARCH INTERN</span>
+            <span className={isGodMode ? 'text-yellow-600 font-bold' : 'text-cyan-400'}>RANK: RESEARCH INTERN</span>
           </div>
           
           <div className="flex flex-col md:flex-row items-end md:items-center gap-6">
-            <a href="/resume.pdf" download className={`border-b-4 border-r-4 px-4 py-3 text-[8px] active:translate-y-1 active:translate-x-1 transition-all ${isGodMode ? 'bg-yellow-500 border-yellow-700 text-black' : 'bg-purple-600 border-purple-900 text-white hover:bg-purple-500'}`}>
+            <a href="/resume.pdf" download className={`border-b-4 border-r-4 px-4 py-3 text-[8px] active:translate-y-1 active:translate-x-1 transition-all ${
+              isGodMode ? 'bg-yellow-500 border-yellow-700 text-black hover:bg-yellow-400' : 'bg-purple-600 border-purple-900 text-white hover:bg-purple-500'
+            }`}>
               [ DOWNLOAD_MANUAL.EXE ]
             </a>
             <div className="text-right text-[10px] text-gray-300 hidden md:block space-y-2">
-              <div>SCORE: <span className={`${isGodMode ? 'text-yellow-300' : 'text-yellow-400'}`}>{score.toString().padStart(6, '0')}</span></div>
+              <div>SCORE: <span className={isGodMode ? 'text-yellow-300 animate-pulse' : 'text-yellow-400'}>{score.toString().padStart(6, '0')}</span></div>
               <div>LIVES: <span className="text-red-500">{isGodMode ? '∞∞∞' : '♥♥♥'}</span></div>
             </div>
           </div>
         </header>
 
-        <WeaponWheel onSelect={handleNavigation} />
+        {/* Navigation */}
+        <WeaponWheel onSelect={handleNavigation} isGodMode={isGodMode} />
 
         <main className="mt-12">
           {currentView === 'home' && (
             showStatus ? (
-              <StatusScreen onClose={() => setShowStatus(false)} /> 
+              <StatusScreen isGodMode={isGodMode} onClose={() => setShowStatus(false)} /> 
             ) : (
               <div className="text-center mt-20 fade-in">
-                <div className="text-cyan-400 animate-pulse mb-8 text-[10px] uppercase tracking-widest">
-                  {isGodMode ? "Welcome, Administrator" : "Press Start to View Player Stats"}
+                <div className={`animate-pulse mb-8 text-[10px] uppercase tracking-widest ${isGodMode ? 'text-yellow-500' : 'text-cyan-400'}`}>
+                  {isGodMode ? "System Access: Administrator" : "Press Start to View Player Stats"}
                 </div>
-                <div className={`inline-block bg-black border-2 p-4 shadow-[4px_4px_0_white] max-w-sm text-left transition-colors ${isGodMode ? 'border-yellow-400 shadow-yellow-400' : 'border-white'}`}>
-                  <div className="text-red-500 text-[9px] mb-2 font-bold uppercase">Mission Brief:</div>
+                <div className={`inline-block bg-black border-2 p-4 shadow-[4px_4px_0_white] max-w-sm text-left transition-all ${
+                  isGodMode ? 'border-yellow-500 shadow-yellow-500' : 'border-white'
+                }`}>
+                  <div className="text-red-500 text-[9px] mb-2 font-bold uppercase underline">Mission Brief:</div>
                   <div className="text-white text-[8px] leading-relaxed">
-                    SELECT <span className="text-cyan-400">STAGES</span> FOR RESEARCH LOGS OR <span className="text-yellow-400">START</span> FOR CHARACTER BIO.
+                    SELECT <span className={isGodMode ? 'text-yellow-400 font-bold' : 'text-cyan-400'}>STAGES</span> FOR PROJECT LOGS OR <span className="text-yellow-400">START</span> FOR CHARACTER BIO.
                   </div>
                 </div>
               </div>
             )
           )}
 
-          {currentView === 'projects' && <QuestLog />}
-          {currentView === 'skills' && <SkillTree />}
-          {currentView === 'contact' && <CommsChannel onSuccess={handleScoreUp} />}
+          {/* Views with GodMode Props injected */}
+          {currentView === 'projects' && <QuestLog isGodMode={isGodMode} />}
+          {currentView === 'skills' && <SkillTree isGodMode={isGodMode} />}
+          {currentView === 'contact' && <CommsChannel isGodMode={isGodMode} onSuccess={handleScoreUp} />}
         </main>
       </div>
     </div>
