@@ -6,46 +6,44 @@ const SplashScreen = ({ onStart }) => {
   const handleBoot = () => {
     setIsBooting(true);
     
-    // 1. Initialize GTA Intro Audio
+    // 1. Audio Initialization
     const audio = new Audio('/gta_intro.mp3'); 
     audio.volume = 0.4;
-    audio.play().catch((err) => console.log("Audio play blocked or missing:", err));
+    audio.play().catch((err) => console.log("Audio play blocked:", err));
 
-    // 2. Set the 6-second mission timer
+    // 2. The 6-Second Mission Timer
     setTimeout(() => {
-      // Fade out and stop audio
       audio.pause();
       audio.currentTime = 0;
-      
-      // Reveal the main terminal (App.jsx)
       onStart(); 
     }, 6000); 
   };
 
   return (
-    <div className="fixed inset-0 z-[300] bg-black flex flex-col items-center justify-center overflow-hidden" 
-         style={{ fontFamily: '"Press Start 2P", cursive' }}>
+    <div className="fixed inset-0 z-[300] bg-black flex flex-col items-center justify-center overflow-hidden font-arcade">
       
-      {/* Flickering CRT Effect Overlay */}
+      {/* Enhanced CRT Scanline Overlay */}
       <div className="absolute inset-0 pointer-events-none bg-[linear-gradient(rgba(18,16,16,0)_50%,rgba(0,0,0,0.1)_50%),linear-gradient(90deg,rgba(255,0,0,0.06),rgba(0,255,0,0.02),rgba(0,0,255,0.06))] bg-[size:100%_2px,3px_100%] opacity-30 z-50"></div>
       
       <div className="relative z-10 text-center px-4 w-full max-w-md">
         {!isBooting ? (
-          <>
-            {/* Initial Boot State */}
+          <div className="fade-in">
+            {/* Version Header */}
             <div className="mb-4 text-cyan-400 text-[10px] animate-pulse uppercase">
-              Rahul_Portfolio_OS [Version 2.0.26]
+              RAHUL_PORTFOLIO_OS [v2.0.26]
             </div>
             <div className="mb-12 text-gray-600 text-[8px] uppercase tracking-widest">
-              (C) 2026 RAHUL M. ALL RIGHTS RESERVED.
+              (C) 2026 RAHUL M. MANGALURU_UNIT
             </div>
 
+            {/* Pulsing Start Button */}
             <button 
               onClick={handleBoot}
               className="group relative px-10 py-5 bg-transparent border-4 border-yellow-400 text-yellow-400 hover:bg-yellow-400 hover:text-black transition-all duration-300 active:scale-90"
             >
-              <span className="text-lg md:text-xl font-bold uppercase">Press Start</span>
+              <span className="text-lg md:text-xl font-bold uppercase animate-pulse-fast">Press Start</span>
               
+              {/* Corner Accents */}
               <div className="absolute -top-3 -left-3 w-6 h-6 border-t-4 border-l-4 border-white group-hover:border-black transition-colors"></div>
               <div className="absolute -bottom-3 -right-3 w-6 h-6 border-b-4 border-r-4 border-white group-hover:border-black transition-colors"></div>
             </button>
@@ -53,37 +51,32 @@ const SplashScreen = ({ onStart }) => {
             <div className="mt-16 text-[7px] text-gray-700 animate-bounce">
               * INSERT COIN TO INITIALIZE *
             </div>
-          </>
+          </div>
         ) : (
-          /* Booting / Loading State */
-          <div className="w-full space-y-8 animate-in fade-in duration-500">
-            <div className="text-yellow-400 text-[10px] animate-pulse uppercase tracking-widest">
-              Initializing Mission...
+          /* High-Energy Loading State */
+          <div className="w-full space-y-8 fade-in">
+            <div className="text-yellow-400 text-[10px] animate-pulse-fast uppercase tracking-widest">
+              INITIALIZING MISSION...
             </div>
             
-            {/* 8-Bit Progress Bar Container */}
-            <div className="w-full h-8 border-4 border-white p-1 relative">
-              <div 
-                className="h-full bg-cyan-400 transition-all ease-linear"
-                style={{ 
-                  animation: 'loadingBar 6s linear forwards' 
-                }}
-              ></div>
+            {/* Progress Bar with the new CSS animation */}
+            <div className="w-full h-8 border-4 border-white p-1 relative shadow-[0_0_15px_rgba(34,211,238,0.2)]">
+              <div className="h-full bg-cyan-400 animate-loading-bar"></div>
             </div>
             
             {/* Scrolling Bios Text */}
             <div className="text-[7px] text-gray-500 text-left space-y-2 font-mono">
-              <p className="animate-pulse">{">"} LOADING: MOLAR_ANALYZER_EXT...</p>
-              <p className="delay-700 animate-pulse">{">"} MOUNTING: M.SC_SW_TECH_STACK...</p>
-              <p className="delay-1000 animate-pulse">{">"} SYNCING: INTERMEDIATE_JAVA_LOGIC...</p>
-              <p className="delay-1500 animate-pulse">{">"} ESTABLISHING: VS_MODE_COMMS...</p>
+              <p className="animate-pulse">{">"} MOUNTING: MOLAR_ANALYZER_EXT...</p>
+              <p className="animate-pulse">{">"} LOADING: M.SC_SW_TECH_LOGS...</p>
+              <p className="animate-pulse">{">"} SYNCING: INTERMEDIATE_JAVA_ENV...</p>
+              <p className="animate-pulse-fast text-cyan-500">{">"} ESTABLISHING: VS_MODE_COMMS...</p>
             </div>
           </div>
         )}
       </div>
 
-      {/* Retro Horizontal Scanline Animation */}
-      <div className="absolute top-0 left-0 w-full h-1 bg-white/5 animate-scanline pointer-events-none"></div>
+      {/* Retro Horizontal Scanline */}
+      <div className="absolute top-0 left-0 w-full h-1 bg-white/10 animate-scanline pointer-events-none"></div>
     </div>
   );
 };
