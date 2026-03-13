@@ -1,43 +1,48 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 
 const LoadingScreen = ({ onComplete }) => {
-  const [progress, setProgress] = useState(0);
-
   useEffect(() => {
-    const interval = setInterval(() => {
-      setProgress((oldProgress) => {
-        if (oldProgress >= 100) {
-          clearInterval(interval);
-          setTimeout(onComplete, 500); // Small delay after 100% for effect
-          return 100;
-        }
-        return oldProgress + 10;
-      });
-    }, 150); // Speed of the loading bar
+    // This timer controls how long the screen stays visible
+    const timer = setTimeout(() => {
+      onComplete();
+    }, 2000); // Set to 2 seconds
 
-    return () => clearInterval(interval);
+    return () => clearTimeout(timer);
   }, [onComplete]);
 
   return (
-    <div className="fixed inset-0 z-[100] bg-black flex flex-col items-center justify-center font-mono">
-      <div className="text-yellow-400 text-xl mb-8 animate-pulse uppercase tracking-[0.2em]">
-        Loading Data...
-      </div>
+    <div className="fixed inset-0 z-[500] bg-black flex flex-col items-center justify-center font-arcade">
+      {/* Retro Scanline */}
+      <div className="absolute inset-0 pointer-events-none bg-[linear-gradient(rgba(18,16,16,0)_50%,rgba(0,0,0,0.1)_50%)] bg-[size:100%_4px] opacity-20"></div>
       
-      {/* 8-Bit Progress Bar Container */}
-      <div className="w-64 h-8 border-4 border-gray-700 p-1">
-        <div 
-          className="h-full bg-cyan-400 transition-all duration-150"
-          style={{ width: `${progress}%` }}
-        ></div>
+      <div className="relative z-10 text-center">
+        <div className="text-cyan-400 text-sm mb-8 animate-pulse uppercase tracking-[0.2em]">
+          Loading_Area...
+        </div>
+        
+        {/* Progress Bar Container */}
+        <div className="w-64 h-8 border-4 border-white p-1 relative shadow-[4px_4px_0_rgba(255,255,255,0.2)]">
+          {/* The Actual Bar */}
+          <div className="h-full bg-cyan-500 animate-loading-bar-normal"></div>
+        </div>
+
+        <div className="mt-6 text-[8px] text-gray-500 animate-pulse uppercase">
+          Fetching Data Segments
+        </div>
       </div>
-      
-      <div className="mt-4 text-cyan-400 text-[10px]">
-        {progress}% COMPLETE
-      </div>
-      
-      {/* Decorative scanlines for the loader */}
-      <div className="absolute inset-0 bg-[linear-gradient(rgba(18,16,16,0)_50%,rgba(0,0,0,0.1)_50%)] bg-[size:100%_4px] pointer-events-none"></div>
+
+      <style jsx>{`
+        @keyframes loadingBarNormal {
+          0% { width: 0%; }
+          20% { width: 10%; }
+          50% { width: 45%; }
+          80% { width: 90%; }
+          100% { width: 100%; }
+        }
+        .animate-loading-bar-normal {
+          animation: loadingBarNormal 2s linear forwards;
+        }
+      `}</style>
     </div>
   );
 };
