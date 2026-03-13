@@ -4,13 +4,15 @@ import QuestLog from './QuestLog';
 import SkillTree from './SkillTree';
 import CommsChannel from './CommsChannel';
 import LoadingScreen from './LoadingScreen';
+import SplashScreen from './SplashScreen';
 import './index.css';
 
 const App = () => {
   const [currentView, setCurrentView] = useState('home');
+  const [isPoweredOn, setIsPoweredOn] = useState(false); // Controls the initial boot
   const [isLoading, setIsLoading] = useState(false);
   const [isGameOver, setIsGameOver] = useState(false);
-  const [score, setScore] = useState(9448); // Your starting score
+  const [score, setScore] = useState(9448); 
 
   let idleTimer;
   const resetTimer = () => {
@@ -20,6 +22,8 @@ const App = () => {
   };
 
   useEffect(() => {
+    if (!isPoweredOn) return; // Only track idle time after power on
+
     const events = ['mousemove', 'click', 'keydown'];
     events.forEach(e => window.addEventListener(e, resetTimer));
     resetTimer();
@@ -27,11 +31,10 @@ const App = () => {
       events.forEach(e => window.removeEventListener(e, resetTimer));
       clearTimeout(idleTimer);
     };
-  }, []);
+  }, [isPoweredOn]);
 
   const handleNavigation = (view) => {
     if (view === 'home') {
-      // START Animation trigger: 1s delay for the "Ready?" feel
       setIsLoading(true);
       setTimeout(() => {
         setCurrentView('projects');
@@ -43,13 +46,20 @@ const App = () => {
     setCurrentView(view);
   };
 
-  // The Interactive Score Reward
   const handleScoreUp = () => setScore(prev => prev + 500);
+
+  // --- RENDER LOGIC ---
+  if (!isPoweredOn) {
+    return <SplashScreen onStart={() => setIsPoweredOn(true)} />;
+  }
 
   return (
     <div className="min-h-screen w-full bg-gray-900 p-8 relative overflow-hidden text-white" 
          style={{ fontFamily: '"Press Start 2P", cursive', fontSize: '0.8rem' }}>
       
+      {/* CRT Scanline Effect Overlay (Global) */}
+      <div className="fixed inset-0 pointer-events-none bg-[linear-gradient(rgba(18,16,16,0)_50%,rgba(0,0,0,0.1)_50%)] bg-[size:100%_4px] z-[100] opacity-20"></div>
+
       {/* 8-Bit Border */}
       <div className="fixed inset-0 pointer-events-none border-[16px] border-gray-800 opacity-50 z-0"></div>
 
@@ -70,8 +80,7 @@ const App = () => {
           </div>
           
           <div className="flex flex-col md:flex-row items-end md:items-center gap-6">
-            {/* Renamed CV Button to Manual */}
-            <a href="/resume.pdf" download className="bg-purple-600 border-b-4 border-r-4 border-purple-900 px-4 py-3 hover:bg-purple-500 text-[8px] active:translate-y-1 active:translate-x-1">
+            <a href="/resume.pdf" download className="bg-purple-600 border-b-4 border-r-4 border-purple-900 px-4 py-3 hover:bg-purple-500 text-[8px] active:translate-y-1 active:translate-x-1 transition-all">
               [ DOWNLOAD_MANUAL.EXE ]
             </a>
             <div className="text-right text-[10px] text-gray-300 hidden md:block space-y-2">

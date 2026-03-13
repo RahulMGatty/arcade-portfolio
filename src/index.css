@@ -11,3 +11,10 @@ body {
 button, a, input, textarea {
   cursor: url('https://unpkg.com/cursor-pack@1.0.0/cursors/mario/pointer.png'), pointer !important;
 }
+@keyframes scanline {
+  0% { transform: translateY(0); }
+  100% { transform: translateY(100vh); }
+}
+.animate-scanline {
+  animation: scanline 8s linear infinite;
+}
