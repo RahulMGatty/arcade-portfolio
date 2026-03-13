@@ -108,3 +108,16 @@ button, a, input, textarea, [role="button"] {
   80% { transform: translate(2px, -2px); }
   100% { transform: translate(0); }
 }
+/* index.css */
+@keyframes systemPurge {
+  0% { background-color: #ff0000; opacity: 1; }
+  100% { background-color: transparent; opacity: 0; }
+}
+
+.purge-flash {
+  position: fixed;
+  inset: 0;
+  z-index: 999;
+  pointer-events: none;
+  animation: systemPurge 0.4s ease-out forwards;
+}

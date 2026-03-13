@@ -27,7 +27,20 @@ const App = () => {
   ];
 
   const triggerGodMode = () => {
-    setIsGodLoading(true); // Special 4s ascension loader
+    // PURGE LOGIC: If already in God Mode, show a 1s reset loader
+    if (isGodMode) {
+      setIsGodLoading(true); 
+      
+      setTimeout(() => {
+        setIsGodLoading(false);
+        setIsGodMode(false);
+        setScore(9448); // Reset score to original value
+      }, 1000); // 1-second Purge duration
+      return;
+    }
+
+    // ASCENSION LOGIC: Start the 4s ascension sequence
+    setIsGodLoading(true);
     const audio = new Audio('/cheat.mp3');
     audio.volume = 0.5;
     audio.play().catch(() => {});
@@ -54,7 +67,7 @@ const App = () => {
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [isPoweredOn]);
+  }, [isPoweredOn, isGodMode]); // Dependency added to ensure toggle logic is fresh
 
   // --- IDLE TIMER ---
   const idleTimer = useRef(null);
@@ -83,7 +96,7 @@ const App = () => {
       return;
     }
     setShowStatus(false);
-    setIsLoading(true); // Triggers the 2s normal/gold loading screen
+    setIsLoading(true); 
     setCurrentView(view);
   };
 
@@ -92,11 +105,11 @@ const App = () => {
   // --- RENDER LOGIC ---
   if (!isPoweredOn) return <SplashScreen onStart={() => setIsPoweredOn(true)} />;
   
-  // High-priority render for the Gold Ascension sequence
-  if (isGodLoading) return <GodLoadingScreen />;
+  // Renders the GodLoadingScreen with the current mode passed as a prop
+  if (isGodLoading) return <GodLoadingScreen isGodMode={isGodMode} />;
 
   return (
-    <div className={`min-h-screen w-full p-8 relative overflow-hidden text-white transition-all duration-700 ${
+    <div className={`min-h-screen w-full p-8 relative overflow-hidden text-white transition-all duration-1000 ${
            isGodMode ? 'bg-yellow-900/40' : 'bg-gray-900' 
          }`} 
          style={{ fontFamily: '"Press Start 2P", cursive', fontSize: '0.8rem' }}>
@@ -115,7 +128,7 @@ const App = () => {
         </div>
       )}
 
-      {/* 2-SECOND NAVIGATION LOADER (Now Gold-Ready) */}
+      {/* 1-SECOND NAVIGATION LOADER */}
       {isLoading && <LoadingScreen onComplete={() => setIsLoading(false)} isGodMode={isGodMode} />}
 
       <div className="relative z-10 max-w-6xl mx-auto">
