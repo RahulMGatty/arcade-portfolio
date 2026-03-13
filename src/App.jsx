@@ -30,6 +30,9 @@ const App = () => {
     // PURGE LOGIC: If already in God Mode, show a 1s reset loader
     if (isGodMode) {
       setIsGodLoading(true); 
+      const purgeAudio = new Audio('/purge.wav'); // Ensure this file is in your /public folder
+      purgeAudio.volume = 0.6;
+      purgeAudio.play().catch(() => {});
       
       setTimeout(() => {
         setIsGodLoading(false);
