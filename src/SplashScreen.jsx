@@ -16,7 +16,7 @@ const SplashScreen = ({ onStart }) => {
       audio.pause();
       audio.currentTime = 0;
       onStart(); 
-    }, 6000); 
+    }, 13000); 
   };
 
   return (
@@ -65,11 +65,15 @@ const SplashScreen = ({ onStart }) => {
             </div>
             
             {/* Scrolling Bios Text */}
+            {/* Updated Scrolling Bios Text for a 13s wait */}
             <div className="text-[7px] text-gray-500 text-left space-y-2 font-mono">
-              <p className="animate-pulse">{">"} MOUNTING: MOLAR_ANALYZER_EXT...</p>
-              <p className="animate-pulse">{">"} LOADING: M.SC_SW_TECH_LOGS...</p>
-              <p className="animate-pulse">{">"} SYNCING: INTERMEDIATE_JAVA_ENV...</p>
-              <p className="animate-pulse-fast text-cyan-500">{">"} ESTABLISHING: VS_MODE_COMMS...</p>
+            <p className="animate-pulse">{">"} ACCESSING ST. ALOYSIUS ACADEMIC_LOGS...</p>
+            <p className="animate-pulse">{">"} MOUNTING: MOLAR_ANALYZER_3D_EXT...</p>
+            <p className="animate-pulse">{">"} SCANNING: DICOM_DATA_RESOURCES...</p>
+            <p className="animate-pulse">{">"} LOADING: MERN_STACK_VIRTUAL_ENV...</p>
+            <p className="animate-pulse">{">"} SYNCING: INTERMEDIATE_JAVA_LOGIC...</p>
+            <p className="animate-pulse">{">"} CACHING: S4_HOLIDAYS_RESOURCES...</p>
+            <p className="animate-pulse-fast text-cyan-500">{">"} ESTABLISHING: VS_MODE_ENCRYPTION...</p>
             </div>
           </div>
         )}
