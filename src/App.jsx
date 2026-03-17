@@ -11,7 +11,10 @@ import './index.css';
 
 const App = () => {
   const [currentView, setCurrentView] = useState('home');
-  const [isPoweredOn, setIsPoweredOn] = useState(false);
+  // Check session storage immediately on load
+  const [isPoweredOn, setIsPoweredOn] = useState(() => {
+    return sessionStorage.getItem('hasPoweredOn') === 'true';
+  });
   const [isLoading, setIsLoading] = useState(false);
   const [isGameOver, setIsGameOver] = useState(false);
   const [score, setScore] = useState(9448); 
@@ -30,6 +33,12 @@ const App = () => {
     'ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 
     'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a'
   ];
+
+  // --- PERSISTENCE LOGIC ---
+  const handleInitialPowerOn = () => {
+    sessionStorage.setItem('hasPoweredOn', 'true');
+    setIsPoweredOn(true);
+  };
 
   // --- TOUCH HANDLERS ---
   const onTouchStart = (e) => {
@@ -85,7 +94,6 @@ const App = () => {
     }, 4000); 
   };
   
-  // Desktop Konami Effect
   useEffect(() => {
     if (!isPoweredOn) return;
     const handleKeyDown = (e) => {
@@ -134,12 +142,12 @@ const App = () => {
 
   const handleScoreUp = () => setScore(prev => prev + 500);
 
-  if (!isPoweredOn) return <SplashScreen onStart={() => setIsPoweredOn(true)} />;
+  // Updated Conditional Rendering
+  if (!isPoweredOn) return <SplashScreen onStart={handleInitialPowerOn} />;
   if (isGodLoading) return <GodLoadingScreen isGodMode={isGodMode} />;
 
   return (
     <div 
-      // TOUCH HANDLERS APPLIED TO ROOT
       onTouchStart={onTouchStart} 
       onTouchMove={onTouchMove} 
       onTouchEnd={onTouchEnd}

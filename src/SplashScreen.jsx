@@ -12,25 +12,19 @@ const SplashScreen = ({ onStart }) => {
     "Check the Manual (.EXE) for a detailed technical breakdown.",
     "Project previews use custom CSS CRT filters for that 80s arcade glow.",
     "Everything you see is built with React, Tailwind, and Framer Motion.",
-    // Smart Platform Hint
-    /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
+    /Android|iPhone|iPad/i.test(navigator.userAgent)
       ? "CHEAT: Swipe ↑↑↓↓←→←→ then DOUBLE TAP for God Mode."
       : "CHEAT: Input ↑↑↓↓←→←→ B A on keys for God Mode."
   ];
 
-  // Logic to cycle tips every 4 seconds once booting starts
   useEffect(() => {
     if (!isBooting) return;
-
-    // Pick a random starting tip
     setCurrentTip(Math.floor(Math.random() * tips.length));
-
     const interval = setInterval(() => {
       setCurrentTip((prev) => (prev + 1) % tips.length);
     }, 4000);
-
     return () => clearInterval(interval);
-  }, [isBooting]);
+  }, [isBooting, tips.length]);
 
   const handleBoot = () => {
     setIsBooting(true);
@@ -47,7 +41,6 @@ const SplashScreen = ({ onStart }) => {
 
   return (
     <div className="fixed inset-0 z-[300] bg-black flex flex-col items-center justify-center overflow-hidden font-arcade">
-      {/* Enhanced CRT Scanline Overlay */}
       <div className="absolute inset-0 pointer-events-none bg-[linear-gradient(rgba(18,16,16,0)_50%,rgba(0,0,0,0.1)_50%),linear-gradient(90deg,rgba(255,0,0,0.06),rgba(0,255,0,0.02),rgba(0,0,255,0.06))] bg-[size:100%_2px,3px_100%] opacity-30 z-50"></div>
       
       <div className="relative z-10 text-center px-4 w-full max-w-md">
@@ -79,11 +72,10 @@ const SplashScreen = ({ onStart }) => {
               INITIALIZING MISSION...
             </div>
             
-            <div className="w-full h-6 border-4 border-white p-1 relative">
+            <div className="w-full h-6 border-4 border-white p-1 relative shadow-[0_0_15px_rgba(34,211,238,0.2)]">
               <div className="h-full bg-cyan-400 animate-loading-bar"></div>
             </div>
 
-            {/* --- THE PRO-TIP BOX --- */}
             <div className="bg-gray-900/80 border-2 border-cyan-400 p-4 text-left relative overflow-hidden">
                 <div className="text-cyan-400 text-[7px] mb-2 font-bold tracking-[3px] uppercase">
                     Intel_Log: Tip_{currentTip + 1}
@@ -91,7 +83,6 @@ const SplashScreen = ({ onStart }) => {
                 <p className="text-white text-[9px] leading-relaxed italic">
                     "{tips[currentTip]}"
                 </p>
-                {/* Scanning bar effect */}
                 <div className="absolute bottom-0 left-0 w-full h-0.5 bg-cyan-900">
                     <div className="h-full bg-cyan-400 w-1/4 animate-scan"></div>
                 </div>
@@ -106,7 +97,6 @@ const SplashScreen = ({ onStart }) => {
           </div>
         )}
       </div>
-
       <div className="absolute top-0 left-0 w-full h-1 bg-white/10 animate-scanline pointer-events-none"></div>
     </div>
   );
