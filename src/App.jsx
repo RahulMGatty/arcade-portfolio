@@ -18,31 +18,61 @@ const App = () => {
   const [showStatus, setShowStatus] = useState(false);
   const [isGodMode, setIsGodMode] = useState(false);
   const [isGodLoading, setIsGodLoading] = useState(false);
+  
+  // Mobile Touch States
+  const [touchStart, setTouchStart] = useState(null);
+  const [touchEnd, setTouchEnd] = useState(null);
+  const [swipeSequence, setSwipeSequence] = useState([]);
 
-  // --- KONAMI CODE LOGIC ---
   const konamiIndex = useRef(0);
+  const minSwipeDistance = 50;
   const KONAMI_CODE = [
     'ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 
     'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a'
   ];
 
+  // --- TOUCH HANDLERS ---
+  const onTouchStart = (e) => {
+    setTouchEnd(null);
+    setTouchStart({ x: e.targetTouches[0].clientX, y: e.targetTouches[0].clientY });
+  };
+
+  const onTouchMove = (e) => setTouchEnd({ x: e.targetTouches[0].clientX, y: e.targetTouches[0].clientY });
+
+  const onTouchEnd = () => {
+    if (!touchStart || !touchEnd) return;
+    const distanceX = touchStart.x - touchEnd.x;
+    const distanceY = touchStart.y - touchEnd.y;
+    const isHorizontalSwipe = Math.abs(distanceX) > Math.abs(distanceY);
+
+    let direction = "";
+    if (isHorizontalSwipe) {
+      direction = distanceX > minSwipeDistance ? "left" : distanceX < -minSwipeDistance ? "right" : "";
+    } else {
+      direction = distanceY > minSwipeDistance ? "up" : distanceY < -minSwipeDistance ? "down" : "";
+    }
+
+    if (direction) {
+      const newSeq = [...swipeSequence, direction].slice(-8);
+      setSwipeSequence(newSeq);
+    }
+  };
+
   const triggerGodMode = () => {
-    // PURGE LOGIC: If already in God Mode, show a 1s reset loader
     if (isGodMode) {
       setIsGodLoading(true); 
-      const purgeAudio = new Audio('/purge.wav'); // Ensure this file is in your /public folder
+      const purgeAudio = new Audio('/purge.wav'); 
       purgeAudio.volume = 0.6;
       purgeAudio.play().catch(() => {});
       
       setTimeout(() => {
         setIsGodLoading(false);
         setIsGodMode(false);
-        setScore(9448); // Reset score to original value
-      }, 1000); // 1-second Purge duration
+        setScore(9448); 
+      }, 1000);
       return;
     }
 
-    // ASCENSION LOGIC: Start the 4s ascension sequence
     setIsGodLoading(true);
     const audio = new Audio('/cheat.mp3');
     audio.volume = 0.5;
@@ -55,6 +85,7 @@ const App = () => {
     }, 4000); 
   };
   
+  // Desktop Konami Effect
   useEffect(() => {
     if (!isPoweredOn) return;
     const handleKeyDown = (e) => {
@@ -70,9 +101,8 @@ const App = () => {
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [isPoweredOn, isGodMode]); // Dependency added to ensure toggle logic is fresh
+  }, [isPoweredOn, isGodMode]);
 
-  // --- IDLE TIMER ---
   const idleTimer = useRef(null);
   const resetTimer = () => {
     setIsGameOver(false);
@@ -91,7 +121,6 @@ const App = () => {
     };
   }, [isPoweredOn]);
 
-  // --- NAVIGATION ---
   const handleNavigation = (view) => {
     if (view === 'home') {
       setShowStatus(true);
@@ -105,22 +134,30 @@ const App = () => {
 
   const handleScoreUp = () => setScore(prev => prev + 500);
 
-  // --- RENDER LOGIC ---
   if (!isPoweredOn) return <SplashScreen onStart={() => setIsPoweredOn(true)} />;
-  
-  // Renders the GodLoadingScreen with the current mode passed as a prop
   if (isGodLoading) return <GodLoadingScreen isGodMode={isGodMode} />;
 
   return (
-    <div className={`min-h-screen w-full p-8 relative overflow-hidden text-white transition-all duration-1000 ${
-           isGodMode ? 'bg-yellow-900/40' : 'bg-gray-900' 
-         }`} 
-         style={{ fontFamily: '"Press Start 2P", cursive', fontSize: '0.8rem' }}>
+    <div 
+      // TOUCH HANDLERS APPLIED TO ROOT
+      onTouchStart={onTouchStart} 
+      onTouchMove={onTouchMove} 
+      onTouchEnd={onTouchEnd}
+      onDoubleClick={() => {
+        const pattern = ["up", "up", "down", "down", "left", "right", "left", "right"];
+        if (JSON.stringify(swipeSequence) === JSON.stringify(pattern)) {
+            triggerGodMode();
+            setSwipeSequence([]);
+        }
+      }}
+      className={`min-h-screen w-full p-8 relative overflow-hidden text-white transition-all duration-1000 ${
+        isGodMode ? 'bg-yellow-900/40' : 'bg-gray-900' 
+      }`} 
+      style={{ fontFamily: '"Press Start 2P", cursive', fontSize: '0.8rem' }}
+    >
       
-      {/* CRT Overlay */}
       <div className={`fixed inset-0 pointer-events-none bg-[linear-gradient(rgba(18,16,16,0)_50%,rgba(0,0,0,0.1)_50%)] bg-[size:100%_4px] z-[100] opacity-20 ${isGodMode ? 'sepia-[0.5] hue-rotate-[10deg]' : ''}`}></div>
 
-      {/* Dynamic 8-Bit Border */}
       <div className={`fixed inset-0 pointer-events-none border-[16px] z-0 transition-all duration-700 ${
         isGodMode ? 'border-yellow-400 opacity-100 shadow-[0_0_40px_rgba(234,179,8,0.5)]' : 'border-gray-800 opacity-50'
       }`}></div>
@@ -131,7 +168,6 @@ const App = () => {
         </div>
       )}
 
-      {/* 1-SECOND NAVIGATION LOADER */}
       {isLoading && <LoadingScreen onComplete={() => setIsLoading(false)} isGodMode={isGodMode} />}
 
       <div className="relative z-10 max-w-6xl mx-auto">
