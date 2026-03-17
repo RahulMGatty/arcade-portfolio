@@ -66,7 +66,14 @@ const QuestLog = ({ isGodMode }) => {
       image: null, 
       desc: "Native Android task manager with real-time Firebase sync.", 
       loot: ["Java", "Android Studio", "Firebase"] 
-    }
+    },
+    quest6: { 
+      title: "MISSION: GAMIOFILE", 
+      status: "ACTIVE", 
+      image: "/portfolio.jpg", 
+      desc: "A high-performance retro arcade portfolio system. Featuring a custom 'God Mode' kernel, CRT filters, and chiptune-synced transitions.", 
+      loot: ["React", "Tailwind CSS", "Vercel"] 
+    },
   };
 
   return (

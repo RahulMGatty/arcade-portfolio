@@ -96,7 +96,7 @@ const StatusScreen = ({ onClose, isGodMode }) => {
           <p className={`text-[10px] leading-relaxed mb-8 italic ${
             isGodMode ? 'text-yellow-100 font-bold' : 'text-gray-300'
           }`}>
-            "Currently specialized in 3D Slicer API development and medical imaging research. 
+            "Currently Working on Custom 3D Slicer Extension development and medical imaging research. 
             Intermediate logic mastery in Java, Python, and C++. Available for high-stakes 
             full-stack development missions."
           </p>
