@@ -11,7 +11,6 @@ import './index.css';
 
 const App = () => {
   const [currentView, setCurrentView] = useState('home');
-  // Check session storage immediately on load
   const [isPoweredOn, setIsPoweredOn] = useState(() => {
     return sessionStorage.getItem('hasPoweredOn') === 'true';
   });
@@ -22,48 +21,58 @@ const App = () => {
   const [isGodMode, setIsGodMode] = useState(false);
   const [isGodLoading, setIsGodLoading] = useState(false);
   
-  // Mobile Touch States
-  const [touchStart, setTouchStart] = useState(null);
-  const [touchEnd, setTouchEnd] = useState(null);
+  // --- MOBILE CHEAT LOGIC ---
   const [swipeSequence, setSwipeSequence] = useState([]);
+  const touchStartPos = useRef({ x: 0, y: 0, time: 0 });
+  const minSwipeDistance = 35; 
 
   const konamiIndex = useRef(0);
-  const minSwipeDistance = 50;
   const KONAMI_CODE = [
     'ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 
     'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a'
   ];
 
-  // --- PERSISTENCE LOGIC ---
   const handleInitialPowerOn = () => {
     sessionStorage.setItem('hasPoweredOn', 'true');
     setIsPoweredOn(true);
   };
 
-  // --- TOUCH HANDLERS ---
   const onTouchStart = (e) => {
-    setTouchEnd(null);
-    setTouchStart({ x: e.targetTouches[0].clientX, y: e.targetTouches[0].clientY });
+    touchStartPos.current = { 
+      x: e.targetTouches[0].clientX, 
+      y: e.targetTouches[0].clientY,
+      time: new Date().getTime() // Start the timer
+    };
   };
 
-  const onTouchMove = (e) => setTouchEnd({ x: e.targetTouches[0].clientX, y: e.targetTouches[0].clientY });
+  const onTouchEnd = (e) => {
+    if (!touchStartPos.current) return;
 
-  const onTouchEnd = () => {
-    if (!touchStart || !touchEnd) return;
-    const distanceX = touchStart.x - touchEnd.x;
-    const distanceY = touchStart.y - touchEnd.y;
-    const isHorizontalSwipe = Math.abs(distanceX) > Math.abs(distanceY);
+    const touchEnd = { 
+      x: e.changedTouches[0].clientX, 
+      y: e.changedTouches[0].clientY,
+      time: new Date().getTime()
+    };
 
-    let direction = "";
-    if (isHorizontalSwipe) {
-      direction = distanceX > minSwipeDistance ? "left" : distanceX < -minSwipeDistance ? "right" : "";
-    } else {
-      direction = distanceY > minSwipeDistance ? "up" : distanceY < -minSwipeDistance ? "down" : "";
-    }
+    const dX = touchStartPos.current.x - touchEnd.x;
+    const dY = touchStartPos.current.y - touchEnd.y;
+    const duration = touchEnd.time - touchStartPos.current.time;
 
-    if (direction) {
-      const newSeq = [...swipeSequence, direction].slice(-8);
-      setSwipeSequence(newSeq);
+    // Only register as a "Cheat Input" if the flick is faster than 300ms
+    // This prevents slow scrolling from ruining the sequence
+    if (duration < 300) {
+      const isHorizontal = Math.abs(dX) > Math.abs(dY);
+      let direction = "";
+
+      if (isHorizontal && Math.abs(dX) > minSwipeDistance) {
+        direction = dX > 0 ? "left" : "right";
+      } else if (!isHorizontal && Math.abs(dY) > minSwipeDistance) {
+        direction = dY > 0 ? "up" : "down";
+      }
+
+      if (direction) {
+        setSwipeSequence(prev => [...prev, direction].slice(-8));
+      }
     }
   };
 
@@ -120,7 +129,7 @@ const App = () => {
 
   useEffect(() => {
     if (!isPoweredOn) return; 
-    const events = ['mousemove', 'click', 'keydown'];
+    const events = ['mousemove', 'click', 'keydown', 'touchstart'];
     events.forEach(e => window.addEventListener(e, resetTimer));
     resetTimer();
     return () => {
@@ -142,14 +151,12 @@ const App = () => {
 
   const handleScoreUp = () => setScore(prev => prev + 500);
 
-  // Updated Conditional Rendering
   if (!isPoweredOn) return <SplashScreen onStart={handleInitialPowerOn} />;
   if (isGodLoading) return <GodLoadingScreen isGodMode={isGodMode} />;
 
   return (
     <div 
       onTouchStart={onTouchStart} 
-      onTouchMove={onTouchMove} 
       onTouchEnd={onTouchEnd}
       onDoubleClick={() => {
         const pattern = ["up", "up", "down", "down", "left", "right", "left", "right"];
@@ -158,12 +165,15 @@ const App = () => {
             setSwipeSequence([]);
         }
       }}
-      className={`min-h-screen w-full p-8 relative overflow-hidden text-white transition-all duration-1000 ${
+      className={`min-h-screen w-full p-8 relative overflow-x-hidden text-white transition-all duration-1000 ${
         isGodMode ? 'bg-yellow-900/40' : 'bg-gray-900' 
       }`} 
-      style={{ fontFamily: '"Press Start 2P", cursive', fontSize: '0.8rem' }}
+      style={{ 
+        fontFamily: '"Press Start 2P", cursive', 
+        fontSize: '0.8rem',
+        touchAction: 'pan-y' // Allows vertical scrolling by default
+      }}
     >
-      
       <div className={`fixed inset-0 pointer-events-none bg-[linear-gradient(rgba(18,16,16,0)_50%,rgba(0,0,0,0.1)_50%)] bg-[size:100%_4px] z-[100] opacity-20 ${isGodMode ? 'sepia-[0.5] hue-rotate-[10deg]' : ''}`}></div>
 
       <div className={`fixed inset-0 pointer-events-none border-[16px] z-0 transition-all duration-700 ${
