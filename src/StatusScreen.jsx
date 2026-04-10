@@ -103,7 +103,7 @@ const StatusScreen = ({ onClose, isGodMode }) => {
           {/* RESTORED SOCIAL BUTTONS */}
           <div className="flex gap-4 mb-6">
             <a 
-              href="https://github.com/your-username" 
+              href="https://github.com/RahulMGatty" 
               target="_blank" 
               rel="noopener noreferrer"
               className={`flex-1 text-center py-2 text-[8px] font-bold border-b-4 border-r-4 transition-all active:translate-y-1 active:border-0 ${
@@ -115,7 +115,7 @@ const StatusScreen = ({ onClose, isGodMode }) => {
               GITHUB_DB
             </a>
             <a 
-              href="https://linkedin.com/in/your-profile" 
+              href="https://linkedin.com/in/rahul-m-3b6b28317" 
               target="_blank" 
               rel="noopener noreferrer"
               className={`flex-1 text-center py-2 text-[8px] font-bold border-b-4 border-r-4 transition-all active:translate-y-1 active:border-0 ${
