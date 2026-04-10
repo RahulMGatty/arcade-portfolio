@@ -25,7 +25,7 @@ const StatusScreen = ({ onClose, isGodMode }) => {
         [X]
       </button>
 
-      {/* NEW: PROFILE HEADER WITH PICTURE */}
+      {/* PROFILE HEADER WITH PICTURE */}
       <div className="flex flex-col md:flex-row justify-between items-start mb-8 border-b-2 border-dashed pb-6 border-cyan-900/50">
         <div className="flex-1">
           <h2 className={`text-4xl mb-2 uppercase italic tracking-tighter font-bold ${
@@ -52,7 +52,6 @@ const StatusScreen = ({ onClose, isGodMode }) => {
                 filter: isGodMode ? 'none' : 'sepia(100%) hue-rotate(150deg) saturate(300%)' 
               }}
             />
-            {/* CRT Scanline Overlay specifically for the photo */}
             <div className="absolute inset-0 pointer-events-none opacity-30 bg-[linear-gradient(transparent_50%,black_50%)] bg-[length:100%_2px]"></div>
           </div>
           <div className={`absolute -bottom-2 -right-2 text-[8px] font-bold px-2 py-0.5 arcade-font ${isGodMode ? 'bg-yellow-400 text-black' : 'bg-cyan-400 text-black'}`}>
@@ -93,13 +92,41 @@ const StatusScreen = ({ onClose, isGodMode }) => {
           <div className="text-red-500 text-[10px] mb-4 font-bold uppercase tracking-widest animate-pulse">
             {isGodMode ? "[ SYSTEM_OVERRIDE_ACTIVE ]" : "[ MISSION_BIO ]"}
           </div>
-          <p className={`text-[10px] leading-relaxed mb-8 italic ${
+          <p className={`text-[10px] leading-relaxed mb-6 italic ${
             isGodMode ? 'text-yellow-100 font-bold' : 'text-gray-300'
           }`}>
             "Currently Working on Custom 3D Slicer Extension development and medical imaging research. 
             Intermediate logic mastery in Java, Python, and C++. Available for high-stakes 
             full-stack development missions."
           </p>
+
+          {/* RESTORED SOCIAL BUTTONS */}
+          <div className="flex gap-4 mb-6">
+            <a 
+              href="https://github.com/your-username" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className={`flex-1 text-center py-2 text-[8px] font-bold border-b-4 border-r-4 transition-all active:translate-y-1 active:border-0 ${
+                isGodMode 
+                ? 'bg-yellow-400 text-black border-yellow-700 hover:bg-yellow-300' 
+                : 'bg-gray-800 text-cyan-400 border-black hover:bg-gray-700'
+              }`}
+            >
+              GITHUB_DB
+            </a>
+            <a 
+              href="https://linkedin.com/in/your-profile" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className={`flex-1 text-center py-2 text-[8px] font-bold border-b-4 border-r-4 transition-all active:translate-y-1 active:border-0 ${
+                isGodMode 
+                ? 'bg-yellow-500 text-black border-yellow-800 hover:bg-yellow-400' 
+                : 'bg-blue-900 text-white border-blue-950 hover:bg-blue-800'
+              }`}
+            >
+              LINKEDIN_ID
+            </a>
+          </div>
           
           <div className="grid grid-cols-2 gap-y-4 gap-x-2 text-[8px] text-gray-500 uppercase font-bold">
             <div>LOCATION: <span className={isGodMode ? 'text-yellow-300' : 'text-white'}>MANGALURU, IN</span></div>

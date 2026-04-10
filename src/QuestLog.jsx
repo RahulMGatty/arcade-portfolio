@@ -1,10 +1,9 @@
 import React, { useState, useMemo } from 'react';
 
-// 1. Static Data Extraction: Move this outside the component 
-// to prevent re-instantiation on every state change/render.
 const QUEST_DATA = {
   quest1: { 
     title: "RESEARCH: MOLAR ANALYZER", 
+    url: "https://github.com/Rahul-M-Mangaluru", // Defaulting to GitHub for Research
     status: "IN_PROGRESS", 
     image: null, 
     desc: "Custom 3D Slicer extension for tooth analysis using Python and SDKs. Focused on medical imaging and patient DICOM data.", 
@@ -12,6 +11,7 @@ const QUEST_DATA = {
   },
   quest2: { 
     title: "MISSION: S4 HOLIDAYS", 
+    url: "https://s4holidays.com/",
     status: "CLEARED", 
     image: "/s4_holiday.jpg", 
     desc: "Full-stack travel portal built during M.Sc. studies at St. Aloysius.", 
@@ -19,6 +19,7 @@ const QUEST_DATA = {
   },
   quest3: { 
     title: "MISSION: MEDICAL HUB", 
+    url: "https://mediparai.streamlit.app/",
     status: "CLEARED", 
     image: "/medical_hub.jpg", 
     desc: "Medical Report Processing Hub built with Python and Streamlit to automate report diagnostics.", 
@@ -26,6 +27,7 @@ const QUEST_DATA = {
   },
   quest4: { 
     title: "MISSION: MOVIESTAR", 
+    url: "https://github.com/Rahul-M-Mangaluru",
     status: "COMPLETED", 
     image: null, 
     desc: "Discovery platform with JWT-auth and TMDb API integration.", 
@@ -33,6 +35,7 @@ const QUEST_DATA = {
   },
   quest5: { 
     title: "MISSION: MISSIONME", 
+    url: "https://github.com/Rahul-M-Mangaluru",
     status: "ACTIVE", 
     image: null, 
     desc: "Native Android task manager with real-time Firebase sync.", 
@@ -40,6 +43,7 @@ const QUEST_DATA = {
   },
   quest6: { 
     title: "MISSION: GAMIOFILE", 
+    url: "https://gamiofile.vercel.app/",
     status: "ACTIVE", 
     image: "/portfolio.jpg", 
     desc: "A high-performance retro arcade portfolio system. Featuring a custom 'God Mode' kernel, CRT filters, and chiptune-synced transitions.", 
@@ -47,39 +51,63 @@ const QUEST_DATA = {
   },
 };
 
-const ProjectMonitor = React.memo(({ imageUrl, isGodMode }) => (
-  <div className={`relative w-full aspect-video bg-black border-4 overflow-hidden mb-6 group transition-all duration-700 ${
-    isGodMode ? 'border-yellow-400 shadow-[0_0_20px_rgba(234,179,8,0.5)]' : 'border-gray-700'
-  }`}>
-    <div className={`absolute inset-0 pointer-events-none z-20 opacity-30 ${
-      isGodMode 
-      ? 'bg-[linear-gradient(rgba(234,179,8,0.2)_50%,transparent_50%)] bg-[size:100%_3px]' 
-      : 'bg-[linear-gradient(transparent_50%,rgba(0,0,0,0.1)_50%)] bg-[size:100%_3px]'
-    }`}></div>
+const ProjectMonitor = React.memo(({ imageUrl, isGodMode, projectUrl }) => {
+  const isAvailable = !!projectUrl;
 
-    {imageUrl ? (
-      <img 
-        src={imageUrl} 
-        alt="Project Mission" 
-        className={`w-full h-full object-cover transition-all duration-500 ${
-          isGodMode ? 'grayscale-0 brightness-110' : 'grayscale-[40%] group-hover:grayscale-0'
-        }`}
-        loading="lazy" // Performance: Only load images when needed
-      />
-    ) : (
-      <div className={`w-full h-full flex items-center justify-center text-[10px] animate-pulse uppercase font-arcade ${
-        isGodMode ? 'bg-yellow-900/20 text-yellow-400' : 'bg-gray-900 text-gray-700'
-      }`}>
-        Searching for Signal...
-      </div>
-    )}
-  </div>
-));
+  return (
+    <div className={`relative w-full aspect-video bg-black border-4 overflow-hidden mb-6 group transition-all duration-700 ${
+      isGodMode ? 'border-yellow-400 shadow-[0_0_20px_rgba(234,179,8,0.5)]' : 'border-gray-700'
+    }`}>
+      {/* CRT Scanline Effect */}
+      <div className={`absolute inset-0 pointer-events-none z-20 opacity-30 ${
+        isGodMode 
+        ? 'bg-[linear-gradient(rgba(234,179,8,0.2)_50%,transparent_50%)] bg-[size:100%_3px]' 
+        : 'bg-[linear-gradient(transparent_50%,rgba(0,0,0,0.1)_50%)] bg-[size:100%_3px]'
+      }`}></div>
+
+      {isAvailable ? (
+        <a href={projectUrl} target="_blank" rel="noopener noreferrer" className="cursor-pointer block w-full h-full relative group">
+          {imageUrl ? (
+            <img 
+              src={imageUrl} 
+              alt="Project Mission" 
+              className={`w-full h-full object-cover transition-all duration-500 ${
+                isGodMode ? 'grayscale-0 brightness-110' : 'grayscale-[40%] group-hover:grayscale-0 group-hover:scale-105'
+              }`}
+              loading="lazy"
+            />
+          ) : (
+            <div className={`w-full h-full flex flex-col items-center justify-center space-y-2 transition-all duration-500 ${
+                isGodMode ? 'bg-yellow-900/20 text-yellow-400' : 'bg-gray-900/50 text-cyan-500'
+            }`}>
+                <span className="text-[10px] animate-pulse">UPLINK_ESTABLISHED</span>
+                <span className="text-[8px] opacity-50 italic">NO_VISUAL_FEED_AVAILABLE</span>
+            </div>
+          )}
+          
+          {/* Hover Overlay Hint */}
+          <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity z-10 border-2 border-dashed border-white/20 m-2">
+             <span className={`px-4 py-2 text-[8px] font-bold border-2 ${
+                 isGodMode ? 'bg-yellow-400 text-black border-black shadow-[4px_4px_0_white]' : 'bg-cyan-400 text-black border-black shadow-[4px_4px_0_white]'
+             }`}>
+               LAUNCH_MISSION_EXE
+             </span>
+          </div>
+        </a>
+      ) : (
+        <div className={`w-full h-full flex items-center justify-center text-[10px] animate-pulse uppercase font-arcade ${
+          isGodMode ? 'bg-yellow-900/20 text-yellow-400' : 'bg-gray-900 text-gray-700'
+        }`}>
+          Searching for Signal...
+        </div>
+      )}
+    </div>
+  );
+});
 
 const QuestLog = ({ isGodMode }) => {
   const [activeQuest, setActiveQuest] = useState('quest1');
 
-  // useMemo ensures that styles are only re-calculated if isGodMode changes
   const theme = useMemo(() => ({
     sidebar: isGodMode ? 'bg-yellow-900/10 border-yellow-600 shadow-[0_0_15px_rgba(234,179,8,0.2)]' : 'bg-gray-800 border-gray-700',
     panel: isGodMode ? 'bg-black/95 border-yellow-400 shadow-[0_0_25px_rgba(234,179,8,0.3)]' : 'bg-gray-900 border-cyan-400',
@@ -116,7 +144,11 @@ const QuestLog = ({ isGodMode }) => {
 
       {/* Main Details Panel */}
       <div className={`flex-[2] border-4 p-6 md:p-8 transition-all duration-700 ${theme.panel}`}>
-        <ProjectMonitor imageUrl={currentData.image} isGodMode={isGodMode} />
+        <ProjectMonitor 
+            imageUrl={currentData.image} 
+            isGodMode={isGodMode} 
+            projectUrl={currentData.url} 
+        />
         
         <h2 className={`text-lg mb-4 font-bold transition-colors ${theme.textPrimary}`}>
           {currentData.title}
