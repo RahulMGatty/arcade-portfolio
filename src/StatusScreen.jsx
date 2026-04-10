@@ -36,7 +36,7 @@ const StatusScreen = ({ onClose, isGodMode }) => {
           <div className={`text-[10px] tracking-widest uppercase font-bold ${
             isGodMode ? 'text-yellow-500' : 'text-cyan-400'
           }`}>
-            Rank: {isGodMode ? 'Legendary Administrator' : 'Research Intern'} // Unit: St. Aloysius
+            Rank: {isGodMode ? 'Legendary Administrator' : 'M.Sc. Software Scholar'} // Prev Unit: St. Aloysius
           </div>
         </div>
 
@@ -95,9 +95,9 @@ const StatusScreen = ({ onClose, isGodMode }) => {
           <p className={`text-[10px] leading-relaxed mb-6 italic ${
             isGodMode ? 'text-yellow-100 font-bold' : 'text-gray-300'
           }`}>
-            "Currently Working on Custom 3D Slicer Extension development and medical imaging research. 
-            Intermediate logic mastery in Java, Python, and C++. Available for high-stakes 
-            full-stack development missions."
+            "M.Sc. Software Technology specialist. Mission history includes 3D Slicer extension development 
+            and full-stack system automation. Mastered Java, Python, and React. 
+            Ready for next-gen development assignments and medical imaging breakthroughs."
           </p>
 
           {/* RESTORED SOCIAL BUTTONS */}
@@ -130,7 +130,7 @@ const StatusScreen = ({ onClose, isGodMode }) => {
           
           <div className="grid grid-cols-2 gap-y-4 gap-x-2 text-[8px] text-gray-500 uppercase font-bold">
             <div>LOCATION: <span className={isGodMode ? 'text-yellow-300' : 'text-white'}>MANGALURU, IN</span></div>
-            <div>EXP_LEVEL: <span className={isGodMode ? 'text-yellow-300' : 'text-white'}>M.SC SW TECH</span></div>
+            <div>EXP_LEVEL: <span className={isGodMode ? 'text-yellow-300' : 'text-white'}>MASTER_GRAD</span></div>
             <div>CURRENT_HP: <span className={isGodMode ? 'text-yellow-400 animate-pulse' : 'text-green-500'}>
               {isGodMode ? '∞ / ∞' : '100/100'}
             </span></div>

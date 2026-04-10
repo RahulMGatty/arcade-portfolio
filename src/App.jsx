@@ -197,7 +197,7 @@ const App = () => {
               <h1 className={`text-2xl drop-shadow-[4px_4px_0_rgba(0,0,0,1)] mb-2 uppercase ${isGodMode ? 'text-yellow-300 animate-pulse' : 'text-yellow-400'}`}>Rahul M</h1>
               {isGodMode && <span className="bg-yellow-400 text-black text-[7px] px-2 py-1 rounded animate-bounce font-bold tracking-tighter">GOD_MODE</span>}
             </div>
-            <span className={isGodMode ? 'text-yellow-200' : 'text-cyan-400'}>RANK: RESEARCH INTERN</span>
+            <span className={isGodMode ? 'text-yellow-200' : 'text-cyan-400'}>RANK: M.Sc. Software Scholar</span>
           </div>
           
           <div className="flex flex-col md:flex-row items-end md:items-center gap-6">
